@@ -78,14 +78,6 @@ extern "C" {
 #define CAMERA_ADC_IRQN ADC0_IRQn
 /* Camera_ADC interrupt handler identifier. */
 #define CAMERA_ADC_IRQHANDLER ADC0_IRQHandler
-/* Definition of peripheral ID */
-#define FTM_1_PERIPHERAL FTM3
-/* Definition of the clock source frequency */
-#define FTM_1_CLOCK_SOURCE CLOCK_GetFreq(kCLOCK_BusClk)
-/* FTM_1 interrupt vector ID (number). */
-#define FTM_1_IRQN FTM3_IRQn
-/* FTM_1 interrupt handler identifier. */
-#define FTM_1_IRQHANDLER FTM3_IRQHandler
 /* Alias for GPIOD peripheral */
 #define GPIO_D_GPIO GPIOD
 /* Alias for PORTD */
@@ -94,6 +86,22 @@ extern "C" {
 #define GPIO_D_IRQN PORTD_IRQn
 /* GPIO_D interrupt handler identifier. */
 #define GPIO_D_IRQHANDLER PORTD_IRQHandler
+/* Definition of peripheral ID */
+#define ENCODER_TIMER_PERIPHERAL FTM3
+/* Definition of the clock source frequency */
+#define ENCODER_TIMER_CLOCK_SOURCE CLOCK_GetFreq(kCLOCK_BusClk)
+/* Encoder_Timer interrupt vector ID (number). */
+#define ENCODER_TIMER_IRQN FTM3_IRQn
+/* Encoder_Timer interrupt handler identifier. */
+#define ENCODER_TIMER_IRQHANDLER FTM3_IRQHandler
+/* Definition of peripheral ID */
+#define CAMERA_TIMER_PERIPHERAL FTM1
+/* Definition of the clock source frequency */
+#define CAMERA_TIMER_CLOCK_SOURCE CLOCK_GetFreq(kCLOCK_BusClk)
+/* Camera_Timer interrupt vector ID (number). */
+#define CAMERA_TIMER_IRQN FTM1_IRQn
+/* Camera_Timer interrupt handler identifier. */
+#define CAMERA_TIMER_IRQHANDLER FTM1_IRQHandler
 
 /***********************************************************************************************************************
  * Global variables
@@ -107,7 +115,8 @@ extern adc16_channel_config_t Camera_ADC_channelsConfig[1];
 extern const adc16_config_t Camera_ADC_config;
 extern const adc16_channel_mux_mode_t Camera_ADC_muxMode;
 extern const adc16_hardware_average_mode_t Camera_ADC_hardwareAverageMode;
-extern const ftm_config_t FTM_1_config;
+extern const ftm_config_t Encoder_Timer_config;
+extern const ftm_config_t Camera_Timer_config;
 
 /***********************************************************************************************************************
  * Initialization functions

@@ -494,12 +494,40 @@ void Camera_ADC_init(void) {
 }
 
 /***********************************************************************************************************************
- * FTM_1 initialization code
+ * GPIO_D initialization code
  **********************************************************************************************************************/
 /* clang-format off */
 /* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 instance:
-- name: 'FTM_1'
+- name: 'GPIO_D'
+- type: 'gpio'
+- mode: 'GPIO'
+- type_id: 'gpio_be9de87e5addb6b0f416d9acbab34797'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'GPIOD'
+- config_sets:
+  - fsl_gpio:
+    - enable_irq: 'true'
+    - port_interrupt:
+      - IRQn: 'PORTD_IRQn'
+      - enable_priority: 'false'
+      - enable_custom_name: 'false'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+
+void GPIO_D_init(void) {
+  /* Make sure, the clock gate for port D is enabled (e. g. in pin_mux.c) */
+  /* Enable interrupt PORTD_IRQn request in the NVIC */
+  EnableIRQ(PORTD_IRQn);
+}
+
+/***********************************************************************************************************************
+ * Encoder_Timer initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'Encoder_Timer'
 - type: 'ftm'
 - mode: 'EdgeAligned'
 - type_id: 'ftm_04a15ae4af2b404bf2ae403c3dbe98b3'
@@ -532,10 +560,38 @@ instance:
     - EnableTimerInInit: 'true'
     - quick_selection: 'QuickSelectionDefault'
   - ftm_edge_aligned_mode:
-    - ftm_edge_aligned_channels_config: []
+    - ftm_edge_aligned_channels_config:
+      - 0:
+        - edge_aligned_mode: 'kFTM_InputCapture'
+        - input_capture:
+          - chnNumber: 'kFTM_Chnl_4'
+          - input_capture_edge: 'kFTM_RisingEdge'
+          - filterValue: '0'
+          - enable_chan_irq: 'false'
+      - 1:
+        - edge_aligned_mode: 'kFTM_InputCapture'
+        - input_capture:
+          - chnNumber: 'kFTM_Chnl_5'
+          - input_capture_edge: 'kFTM_RisingEdge'
+          - filterValue: '0'
+          - enable_chan_irq: 'false'
+      - 2:
+        - edge_aligned_mode: 'kFTM_InputCapture'
+        - input_capture:
+          - chnNumber: 'kFTM_Chnl_6'
+          - input_capture_edge: 'kFTM_RisingEdge'
+          - filterValue: '0'
+          - enable_chan_irq: 'false'
+      - 3:
+        - edge_aligned_mode: 'kFTM_InputCapture'
+        - input_capture:
+          - chnNumber: 'kFTM_Chnl_7'
+          - input_capture_edge: 'kFTM_RisingEdge'
+          - filterValue: '0'
+          - enable_chan_irq: 'false'
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
-const ftm_config_t FTM_1_config = {
+const ftm_config_t Encoder_Timer_config = {
   .prescale = kFTM_Prescale_Divide_1,
   .bdmMode = kFTM_BdmMode_0,
   .pwmSyncMode = kFTM_SoftwareTrigger,
@@ -550,38 +606,78 @@ const ftm_config_t FTM_1_config = {
   .useGlobalTimeBase = false
 };
 
-void FTM_1_init(void) {
-  FTM_Init(FTM_1_PERIPHERAL, &FTM_1_config);
-  FTM_SetTimerPeriod(FTM_1_PERIPHERAL, ((FTM_1_CLOCK_SOURCE/ (1U << (FTM_1_PERIPHERAL->SC & FTM_SC_PS_MASK))) / 10000) + 1);
-  FTM_StartTimer(FTM_1_PERIPHERAL, kFTM_SystemClock);
+void Encoder_Timer_init(void) {
+  FTM_Init(ENCODER_TIMER_PERIPHERAL, &Encoder_Timer_config);
+  FTM_SetupInputCapture(ENCODER_TIMER_PERIPHERAL, kFTM_Chnl_4, kFTM_RisingEdge, 0);
+  FTM_SetupInputCapture(ENCODER_TIMER_PERIPHERAL, kFTM_Chnl_5, kFTM_RisingEdge, 0);
+  FTM_SetupInputCapture(ENCODER_TIMER_PERIPHERAL, kFTM_Chnl_6, kFTM_RisingEdge, 0);
+  FTM_SetupInputCapture(ENCODER_TIMER_PERIPHERAL, kFTM_Chnl_7, kFTM_RisingEdge, 0);
+  FTM_SetTimerPeriod(ENCODER_TIMER_PERIPHERAL, ((ENCODER_TIMER_CLOCK_SOURCE/ (1U << (ENCODER_TIMER_PERIPHERAL->SC & FTM_SC_PS_MASK))) / 10000) + 1);
+  FTM_StartTimer(ENCODER_TIMER_PERIPHERAL, kFTM_SystemClock);
 }
 
 /***********************************************************************************************************************
- * GPIO_D initialization code
+ * Camera_Timer initialization code
  **********************************************************************************************************************/
 /* clang-format off */
 /* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 instance:
-- name: 'GPIO_D'
-- type: 'gpio'
-- mode: 'GPIO'
-- type_id: 'gpio_be9de87e5addb6b0f416d9acbab34797'
+- name: 'Camera_Timer'
+- type: 'ftm'
+- mode: 'EdgeAligned'
+- type_id: 'ftm_04a15ae4af2b404bf2ae403c3dbe98b3'
 - functional_group: 'BOARD_InitPeripherals'
-- peripheral: 'GPIOD'
+- peripheral: 'FTM1'
 - config_sets:
-  - fsl_gpio:
+  - ftm_main_config:
+    - ftm_config:
+      - clockSource: 'kFTM_SystemClock'
+      - clockSourceFreq: 'GetFreq'
+      - prescale: 'kFTM_Prescale_Divide_1'
+      - timerFrequency: '10000'
+      - bdmMode: 'kFTM_BdmMode_0'
+      - pwmSyncMode: 'kFTM_SoftwareTrigger'
+      - reloadPoints: ''
+      - faultMode: 'kFTM_Fault_Disable'
+      - faultFilterValue: '0'
+      - deadTimePrescale: 'kFTM_Deadtime_Prescale_1'
+      - deadTimeValue: '0'
+      - extTriggers: ''
+      - chnlInitState: ''
+      - chnlPolarity: ''
+      - useGlobalTimeBase: 'false'
+    - timer_interrupts: ''
     - enable_irq: 'true'
-    - port_interrupt:
-      - IRQn: 'PORTD_IRQn'
+    - ftm_interrupt:
+      - IRQn: 'FTM1_IRQn'
       - enable_priority: 'false'
       - enable_custom_name: 'false'
+    - EnableTimerInInit: 'true'
+  - ftm_edge_aligned_mode:
+    - ftm_edge_aligned_channels_config: []
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
+const ftm_config_t Camera_Timer_config = {
+  .prescale = kFTM_Prescale_Divide_1,
+  .bdmMode = kFTM_BdmMode_0,
+  .pwmSyncMode = kFTM_SoftwareTrigger,
+  .reloadPoints = 0,
+  .faultMode = kFTM_Fault_Disable,
+  .faultFilterValue = 0,
+  .deadTimePrescale = kFTM_Deadtime_Prescale_1,
+  .deadTimeValue = 0,
+  .extTriggers = 0,
+  .chnlInitState = 0,
+  .chnlPolarity = 0,
+  .useGlobalTimeBase = false
+};
 
-void GPIO_D_init(void) {
-  /* Make sure, the clock gate for port D is enabled (e. g. in pin_mux.c) */
-  /* Enable interrupt PORTD_IRQn request in the NVIC */
-  EnableIRQ(PORTD_IRQn);
+void Camera_Timer_init(void) {
+  FTM_Init(CAMERA_TIMER_PERIPHERAL, &Camera_Timer_config);
+  FTM_SetTimerPeriod(CAMERA_TIMER_PERIPHERAL, ((CAMERA_TIMER_CLOCK_SOURCE/ (1U << (CAMERA_TIMER_PERIPHERAL->SC & FTM_SC_PS_MASK))) / 10000) + 1);
+  /* Enable interrupt FTM1_IRQn request in the NVIC */
+  EnableIRQ(CAMERA_TIMER_IRQN);
+  FTM_StartTimer(CAMERA_TIMER_PERIPHERAL, kFTM_SystemClock);
 }
 
 /***********************************************************************************************************************
@@ -598,8 +694,9 @@ void BOARD_InitPeripherals(void)
   GPIO_C_init();
   RTC_1_init();
   Camera_ADC_init();
-  FTM_1_init();
   GPIO_D_init();
+  Encoder_Timer_init();
+  Camera_Timer_init();
 }
 
 /***********************************************************************************************************************

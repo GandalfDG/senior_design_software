@@ -148,10 +148,14 @@ BOARD_InitPins:
   - {pin_num: '64', peripheral: FTM2, signal: 'CH, 0', pin_signal: PTB18/CAN0_TX/FTM2_CH0/I2S0_TX_BCLK/FB_AD15/FTM2_QD_PHA}
   - {pin_num: '55', peripheral: I2C0, signal: SCL, pin_signal: ADC0_SE12/PTB2/I2C0_SCL/UART0_RTS_b/ENET0_1588_TMR0/FTM0_FLT3}
   - {pin_num: '56', peripheral: I2C0, signal: SDA, pin_signal: ADC0_SE13/PTB3/I2C0_SDA/UART0_CTS_b/UART0_COL_b/ENET0_1588_TMR1/FTM0_FLT0}
-  - {peripheral: ADC0, signal: 'TRG, A', pin_signal: Flex_timer_2}
   - {pin_num: '18', peripheral: ADC0, signal: 'SE, 0', pin_signal: ADC0_DP0/ADC1_DP3}
   - {pin_num: '94', peripheral: GPIOD, signal: 'GPIO, 1', pin_signal: ADC0_SE5b/PTD1/SPI0_SCK/UART2_CTS_b/FTM3_CH1/FB_CS0_b}
   - {pin_num: '96', peripheral: GPIOD, signal: 'GPIO, 3', pin_signal: PTD3/SPI0_SIN/UART2_TX/FTM3_CH3/FB_AD3/I2C0_SDA}
+  - {pin_num: '80', peripheral: FTM3, signal: 'CH, 4', pin_signal: ADC1_SE4b/CMP0_IN2/PTC8/FTM3_CH4/I2S0_MCLK/FB_AD7}
+  - {pin_num: '81', peripheral: FTM3, signal: 'CH, 5', pin_signal: ADC1_SE5b/CMP0_IN3/PTC9/FTM3_CH5/I2S0_RX_BCLK/FB_AD6/FTM2_FLT0}
+  - {pin_num: '82', peripheral: FTM3, signal: 'CH, 6', pin_signal: ADC1_SE6b/PTC10/I2C1_SCL/FTM3_CH6/I2S0_RX_FS/FB_AD5}
+  - {pin_num: '83', peripheral: FTM3, signal: 'CH, 7', pin_signal: ADC1_SE7b/PTC11/LLWU_P11/I2C1_SDA/FTM3_CH7/I2S0_RXD1/FB_RW_b}
+  - {peripheral: ADC0, signal: 'TRG, A', pin_signal: Flex_timer_1}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -183,6 +187,12 @@ void BOARD_InitPins(void)
     /* PORTC1 (pin 71) is configured as FTM0_CH0 */
     PORT_SetPinMux(PORTC, 1U, kPORT_MuxAlt4);
 
+    /* PORTC10 (pin 82) is configured as FTM3_CH6 */
+    PORT_SetPinMux(PORTC, 10U, kPORT_MuxAlt3);
+
+    /* PORTC11 (pin 83) is configured as FTM3_CH7 */
+    PORT_SetPinMux(PORTC, 11U, kPORT_MuxAlt3);
+
     /* PORTC2 (pin 72) is configured as FTM0_CH1 */
     PORT_SetPinMux(PORTC, 2U, kPORT_MuxAlt4);
 
@@ -191,6 +201,12 @@ void BOARD_InitPins(void)
 
     /* PORTC4 (pin 76) is configured as FTM0_CH3 */
     PORT_SetPinMux(PORTC, 4U, kPORT_MuxAlt4);
+
+    /* PORTC8 (pin 80) is configured as FTM3_CH4 */
+    PORT_SetPinMux(PORTC, 8U, kPORT_MuxAlt3);
+
+    /* PORTC9 (pin 81) is configured as FTM3_CH5 */
+    PORT_SetPinMux(PORTC, 9U, kPORT_MuxAlt3);
 
     /* PORTD1 (pin 94) is configured as PTD1 */
     PORT_SetPinMux(PORTD, 1U, kPORT_MuxAsGpio);
@@ -209,8 +225,8 @@ void BOARD_InitPins(void)
                    /* Mask bits to zero which are setting */
                    (~(SIM_SOPT7_ADC0TRGSEL_MASK | SIM_SOPT7_ADC0PRETRGSEL_MASK | SIM_SOPT7_ADC0ALTTRGEN_MASK)))
 
-                  /* ADC0 trigger select: FTM2 trigger. */
-                  | SIM_SOPT7_ADC0TRGSEL(SOPT7_ADC0TRGSEL_FTM2)
+                  /* ADC0 trigger select: FTM1 trigger. */
+                  | SIM_SOPT7_ADC0TRGSEL(SOPT7_ADC0TRGSEL_FTM1)
 
                   /* ADC0 pretrigger select: Pre-trigger A. */
                   | SIM_SOPT7_ADC0PRETRGSEL(SOPT7_ADC0PRETRGSEL_A)

@@ -28,7 +28,7 @@ void BOARD_InitBootPins(void);
 #define SOPT4_FTM2CH0SRC_FTM 0x00u   /*!<@brief FTM2 channel 0 input capture source select: FTM2_CH0 signal */
 #define SOPT7_ADC0ALTTRGEN_ALT 0x01u /*!<@brief ADC0 alternate trigger enable: Alternate trigger selected for ADC0. */
 #define SOPT7_ADC0PRETRGSEL_A 0x00u  /*!<@brief ADC0 pretrigger select: Pre-trigger A */
-#define SOPT7_ADC0TRGSEL_FTM2 0x0Au  /*!<@brief ADC0 trigger select: FTM2 trigger */
+#define SOPT7_ADC0TRGSEL_FTM1 0x09u  /*!<@brief ADC0 trigger select: FTM1 trigger */
 
 /*! @name PORTB2 (number 55), J4[2]
   @{ */

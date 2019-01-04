@@ -155,6 +155,11 @@
                         <data>true</data>
                      </feature>
                   </dependency>
+                  <dependency resourceType="Peripheral" resourceId="FTM3" description="Peripheral FTM3 is not initialized" problem_level="1" source="Pins:BOARD_InitPins">
+                     <feature name="initialized" evaluation="equal">
+                        <data>true</data>
+                     </feature>
+                  </dependency>
                   <dependency resourceType="SWComponent" resourceId="platform.drivers.common" description="Pins initialization requires the COMMON Driver in the project." problem_level="2" source="Pins:BOARD_InitPins">
                      <feature name="enabled" evaluation="equal" configuration="core0">
                         <data>true</data>
@@ -174,10 +179,14 @@
                   <pin peripheral="FTM2" signal="CH, 0" pin_num="64" pin_signal="PTB18/CAN0_TX/FTM2_CH0/I2S0_TX_BCLK/FB_AD15/FTM2_QD_PHA"/>
                   <pin peripheral="I2C0" signal="SCL" pin_num="55" pin_signal="ADC0_SE12/PTB2/I2C0_SCL/UART0_RTS_b/ENET0_1588_TMR0/FTM0_FLT3"/>
                   <pin peripheral="I2C0" signal="SDA" pin_num="56" pin_signal="ADC0_SE13/PTB3/I2C0_SDA/UART0_CTS_b/UART0_COL_b/ENET0_1588_TMR1/FTM0_FLT0"/>
-                  <pin peripheral="ADC0" signal="TRG, A" pin_num="" pin_signal="Flex_timer_2"/>
                   <pin peripheral="ADC0" signal="SE, 0" pin_num="18" pin_signal="ADC0_DP0/ADC1_DP3"/>
                   <pin peripheral="GPIOD" signal="GPIO, 1" pin_num="94" pin_signal="ADC0_SE5b/PTD1/SPI0_SCK/UART2_CTS_b/FTM3_CH1/FB_CS0_b"/>
                   <pin peripheral="GPIOD" signal="GPIO, 3" pin_num="96" pin_signal="PTD3/SPI0_SIN/UART2_TX/FTM3_CH3/FB_AD3/I2C0_SDA"/>
+                  <pin peripheral="FTM3" signal="CH, 4" pin_num="80" pin_signal="ADC1_SE4b/CMP0_IN2/PTC8/FTM3_CH4/I2S0_MCLK/FB_AD7"/>
+                  <pin peripheral="FTM3" signal="CH, 5" pin_num="81" pin_signal="ADC1_SE5b/CMP0_IN3/PTC9/FTM3_CH5/I2S0_RX_BCLK/FB_AD6/FTM2_FLT0"/>
+                  <pin peripheral="FTM3" signal="CH, 6" pin_num="82" pin_signal="ADC1_SE6b/PTC10/I2C1_SCL/FTM3_CH6/I2S0_RX_FS/FB_AD5"/>
+                  <pin peripheral="FTM3" signal="CH, 7" pin_num="83" pin_signal="ADC1_SE7b/PTC11/LLWU_P11/I2C1_SDA/FTM3_CH7/I2S0_RXD1/FB_RW_b"/>
+                  <pin peripheral="ADC0" signal="TRG, A" pin_num="" pin_signal="Flex_timer_1"/>
                </pins>
             </function>
             <function name="BOARD_InitButtonsPins">
@@ -994,6 +1003,31 @@
                         <data type="Frequency" unit="Hz">0</data>
                      </feature>
                   </dependency>
+                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="FTM3.tmr_ch.4" description="Signal CH4 of peripheral FTM3 is not routed" problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="routed" evaluation="equal">
+                        <data type="Boolean">true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="FTM3.tmr_ch.5" description="Signal CH5 of peripheral FTM3 is not routed" problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="routed" evaluation="equal">
+                        <data type="Boolean">true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="FTM3.tmr_ch.6" description="Signal CH6 of peripheral FTM3 is not routed" problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="routed" evaluation="equal">
+                        <data type="Boolean">true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="FTM3.tmr_ch.7" description="Signal CH7 of peripheral FTM3 is not routed" problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="routed" evaluation="equal">
+                        <data type="Boolean">true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="ClockOutput" resourceId="Bus_clock" description="Bus clock is inactive." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="frequency" evaluation="greaterThan">
+                        <data type="Frequency" unit="Hz">0</data>
+                     </feature>
+                  </dependency>
                </dependencies>
                <instances>
                   <instance name="Motor_PWM" type="ftm" type_id="ftm_04a15ae4af2b404bf2ae403c3dbe98b3" mode="EdgeAligned" peripheral="FTM0" enabled="true">
@@ -1253,7 +1287,17 @@
                         </array>
                      </config_set>
                   </instance>
-                  <instance name="FTM_1" type="ftm" type_id="ftm_04a15ae4af2b404bf2ae403c3dbe98b3" mode="EdgeAligned" peripheral="FTM3" enabled="true">
+                  <instance name="GPIO_D" type="gpio" type_id="gpio_be9de87e5addb6b0f416d9acbab34797" mode="GPIO" peripheral="GPIOD" enabled="true">
+                     <config_set name="fsl_gpio">
+                        <setting name="enable_irq" value="true"/>
+                        <struct name="port_interrupt">
+                           <setting name="IRQn" value="PORTD_IRQn"/>
+                           <setting name="enable_priority" value="false"/>
+                           <setting name="enable_custom_name" value="false"/>
+                        </struct>
+                     </config_set>
+                  </instance>
+                  <instance name="Encoder_Timer" type="ftm" type_id="ftm_04a15ae4af2b404bf2ae403c3dbe98b3" mode="EdgeAligned" peripheral="FTM3" enabled="true">
                      <config_set name="ftm_main_config" quick_selection="QuickSelectionDefault">
                         <struct name="ftm_config">
                            <setting name="clockSource" value="kFTM_SystemClock"/>
@@ -1296,17 +1340,90 @@
                         <setting name="EnableTimerInInit" value="true"/>
                      </config_set>
                      <config_set name="ftm_edge_aligned_mode">
-                        <array name="ftm_edge_aligned_channels_config"/>
+                        <array name="ftm_edge_aligned_channels_config">
+                           <struct name="0">
+                              <setting name="edge_aligned_mode" value="kFTM_InputCapture"/>
+                              <struct name="input_capture">
+                                 <setting name="chnNumber" value="kFTM_Chnl_4"/>
+                                 <setting name="input_capture_edge" value="kFTM_RisingEdge"/>
+                                 <setting name="filterValue" value="0"/>
+                                 <setting name="enable_chan_irq" value="false"/>
+                              </struct>
+                           </struct>
+                           <struct name="1">
+                              <setting name="edge_aligned_mode" value="kFTM_InputCapture"/>
+                              <struct name="input_capture">
+                                 <setting name="chnNumber" value="kFTM_Chnl_5"/>
+                                 <setting name="input_capture_edge" value="kFTM_RisingEdge"/>
+                                 <setting name="filterValue" value="0"/>
+                                 <setting name="enable_chan_irq" value="false"/>
+                              </struct>
+                           </struct>
+                           <struct name="2">
+                              <setting name="edge_aligned_mode" value="kFTM_InputCapture"/>
+                              <struct name="input_capture">
+                                 <setting name="chnNumber" value="kFTM_Chnl_6"/>
+                                 <setting name="input_capture_edge" value="kFTM_RisingEdge"/>
+                                 <setting name="filterValue" value="0"/>
+                                 <setting name="enable_chan_irq" value="false"/>
+                              </struct>
+                           </struct>
+                           <struct name="3">
+                              <setting name="edge_aligned_mode" value="kFTM_InputCapture"/>
+                              <struct name="input_capture">
+                                 <setting name="chnNumber" value="kFTM_Chnl_7"/>
+                                 <setting name="input_capture_edge" value="kFTM_RisingEdge"/>
+                                 <setting name="filterValue" value="0"/>
+                                 <setting name="enable_chan_irq" value="false"/>
+                              </struct>
+                           </struct>
+                        </array>
                      </config_set>
                   </instance>
-                  <instance name="GPIO_D" type="gpio" type_id="gpio_be9de87e5addb6b0f416d9acbab34797" mode="GPIO" peripheral="GPIOD" enabled="true">
-                     <config_set name="fsl_gpio">
+                  <instance name="Camera_Timer" type="ftm" type_id="ftm_04a15ae4af2b404bf2ae403c3dbe98b3" mode="EdgeAligned" peripheral="FTM1" enabled="true">
+                     <config_set name="ftm_main_config">
+                        <struct name="ftm_config">
+                           <setting name="clockSource" value="kFTM_SystemClock"/>
+                           <setting name="clockSourceFreq" value="GetFreq"/>
+                           <setting name="prescale" value="kFTM_Prescale_Divide_1"/>
+                           <setting name="timerFrequency" value="10000"/>
+                           <setting name="bdmMode" value="kFTM_BdmMode_0"/>
+                           <set name="pwmSyncMode">
+                              <selected>
+                                 <id>kFTM_SoftwareTrigger</id>
+                              </selected>
+                           </set>
+                           <set name="reloadPoints">
+                              <selected/>
+                           </set>
+                           <setting name="faultMode" value="kFTM_Fault_Disable"/>
+                           <setting name="faultFilterValue" value="0"/>
+                           <setting name="deadTimePrescale" value="kFTM_Deadtime_Prescale_1"/>
+                           <setting name="deadTimeValue" value="0"/>
+                           <set name="extTriggers">
+                              <selected/>
+                           </set>
+                           <set name="chnlInitState">
+                              <selected/>
+                           </set>
+                           <set name="chnlPolarity">
+                              <selected/>
+                           </set>
+                           <setting name="useGlobalTimeBase" value="false"/>
+                        </struct>
+                        <set name="timer_interrupts">
+                           <selected/>
+                        </set>
                         <setting name="enable_irq" value="true"/>
-                        <struct name="port_interrupt">
-                           <setting name="IRQn" value="PORTD_IRQn"/>
+                        <struct name="ftm_interrupt">
+                           <setting name="IRQn" value="FTM1_IRQn"/>
                            <setting name="enable_priority" value="false"/>
                            <setting name="enable_custom_name" value="false"/>
                         </struct>
+                        <setting name="EnableTimerInInit" value="true"/>
+                     </config_set>
+                     <config_set name="ftm_edge_aligned_mode">
+                        <array name="ftm_edge_aligned_channels_config"/>
                      </config_set>
                   </instance>
                </instances>
