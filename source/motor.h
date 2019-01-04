@@ -26,6 +26,8 @@ public:
 	void set_speed(uint8_t rotation_speed);
 	void set_direction(direction dir);
 	void stop(void);
+	direction getRotationDirection() const;
+	uint8_t getRotationSpeed() const;
 
 private:
 	// the channels corresponding to driving the motor forward or in reverse
