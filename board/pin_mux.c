@@ -148,6 +148,8 @@ BOARD_InitPins:
   - {pin_num: '64', peripheral: FTM2, signal: 'CH, 0', pin_signal: PTB18/CAN0_TX/FTM2_CH0/I2S0_TX_BCLK/FB_AD15/FTM2_QD_PHA}
   - {pin_num: '55', peripheral: I2C0, signal: SCL, pin_signal: ADC0_SE12/PTB2/I2C0_SCL/UART0_RTS_b/ENET0_1588_TMR0/FTM0_FLT3}
   - {pin_num: '56', peripheral: I2C0, signal: SDA, pin_signal: ADC0_SE13/PTB3/I2C0_SDA/UART0_CTS_b/UART0_COL_b/ENET0_1588_TMR1/FTM0_FLT0}
+  - {peripheral: ADC0, signal: 'TRG, A', pin_signal: Flex_timer_2}
+  - {pin_num: '18', peripheral: ADC0, signal: 'SE, 0', pin_signal: ADC0_DP0/ADC1_DP3}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -192,6 +194,19 @@ void BOARD_InitPins(void)
 
                   /* FTM2 channel 0 input capture source select: FTM2_CH0 signal. */
                   | SIM_SOPT4_FTM2CH0SRC(SOPT4_FTM2CH0SRC_FTM));
+
+    SIM->SOPT7 = ((SIM->SOPT7 &
+                   /* Mask bits to zero which are setting */
+                   (~(SIM_SOPT7_ADC0TRGSEL_MASK | SIM_SOPT7_ADC0PRETRGSEL_MASK | SIM_SOPT7_ADC0ALTTRGEN_MASK)))
+
+                  /* ADC0 trigger select: FTM2 trigger. */
+                  | SIM_SOPT7_ADC0TRGSEL(SOPT7_ADC0TRGSEL_FTM2)
+
+                  /* ADC0 pretrigger select: Pre-trigger A. */
+                  | SIM_SOPT7_ADC0PRETRGSEL(SOPT7_ADC0PRETRGSEL_A)
+
+                  /* ADC0 alternate trigger enable: Alternate trigger selected for ADC0. */
+                  | SIM_SOPT7_ADC0ALTTRGEN(SOPT7_ADC0ALTTRGEN_ALT));
 }
 
 /* clang-format off */

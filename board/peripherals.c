@@ -413,6 +413,87 @@ void RTC_1_init(void) {
 }
 
 /***********************************************************************************************************************
+ * Camera_ADC initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'Camera_ADC'
+- type: 'adc16'
+- mode: 'ADC'
+- type_id: 'adc16_7d827be2dc433dc756d94a7ce88cbcc5'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'ADC0'
+- config_sets:
+  - fsl_adc16:
+    - adc16_config:
+      - referenceVoltageSource: 'kADC16_ReferenceVoltageSourceVref'
+      - clockSource: 'kADC16_ClockSourceAsynchronousClock'
+      - enableAsynchronousClock: 'true'
+      - clockDivider: 'kADC16_ClockDivider8'
+      - resolution: 'kADC16_ResolutionSE16Bit'
+      - longSampleMode: 'kADC16_LongSampleDisabled'
+      - enableHighSpeed: 'false'
+      - enableLowPower: 'false'
+      - enableContinuousConversion: 'false'
+    - adc16_channel_mux_mode: 'kADC16_ChannelMuxA'
+    - adc16_hardware_compare_config:
+      - hardwareCompareModeEnable: 'false'
+    - doAutoCalibration: 'true'
+    - trigger: 'true'
+    - hardwareAverageConfiguration: 'kADC16_HardwareAverageDisabled'
+    - enable_dma: 'false'
+    - enable_irq: 'true'
+    - adc_interrupt:
+      - IRQn: 'ADC0_IRQn'
+      - enable_priority: 'false'
+      - enable_custom_name: 'false'
+    - adc16_channels_config:
+      - 0:
+        - enableDifferentialConversion: 'false'
+        - channelNumber: 'SE.0'
+        - enableInterruptOnConversionCompleted: 'true'
+        - channelGroup: '0'
+        - initializeChannel: 'false'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+adc16_channel_config_t Camera_ADC_channelsConfig[1] = {
+  {
+    .channelNumber = 0U,
+    .enableDifferentialConversion = false,
+    .enableInterruptOnConversionCompleted = true,
+  }
+};
+const adc16_config_t Camera_ADC_config = {
+  .referenceVoltageSource = kADC16_ReferenceVoltageSourceVref,
+  .clockSource = kADC16_ClockSourceAsynchronousClock,
+  .enableAsynchronousClock = true,
+  .clockDivider = kADC16_ClockDivider8,
+  .resolution = kADC16_ResolutionSE16Bit,
+  .longSampleMode = kADC16_LongSampleDisabled,
+  .enableHighSpeed = false,
+  .enableLowPower = false,
+  .enableContinuousConversion = false
+};
+const adc16_channel_mux_mode_t Camera_ADC_muxMode = kADC16_ChannelMuxA;
+const adc16_hardware_average_mode_t Camera_ADC_hardwareAverageMode = kADC16_HardwareAverageDisabled;
+
+void Camera_ADC_init(void) {
+  /* Enable interrupt CAMERA_ADC_IRQN request in the NVIC */
+  EnableIRQ(CAMERA_ADC_IRQN);
+  /* Initialize ADC16 converter */
+  ADC16_Init(CAMERA_ADC_PERIPHERAL, &Camera_ADC_config);
+  /* Make sure, that hardware trigger is used */
+  ADC16_EnableHardwareTrigger(CAMERA_ADC_PERIPHERAL, true);
+  /* Configure hardware average mode */
+  ADC16_SetHardwareAverage(CAMERA_ADC_PERIPHERAL, Camera_ADC_hardwareAverageMode);
+  /* Configure channel multiplexing mode */
+  ADC16_SetChannelMuxMode(CAMERA_ADC_PERIPHERAL, Camera_ADC_muxMode);
+  /* Perform auto calibration */
+  ADC16_DoAutoCalibration(CAMERA_ADC_PERIPHERAL);
+}
+
+/***********************************************************************************************************************
  * Initialization functions
  **********************************************************************************************************************/
 void BOARD_InitPeripherals(void)
@@ -425,6 +506,7 @@ void BOARD_InitPeripherals(void)
   GPIO_A_init();
   GPIO_C_init();
   RTC_1_init();
+  Camera_ADC_init();
 }
 
 /***********************************************************************************************************************

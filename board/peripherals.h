@@ -17,6 +17,7 @@
 #include "fsl_gpio.h"
 #include "fsl_port.h"
 #include "fsl_rtc.h"
+#include "fsl_adc16.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -71,6 +72,12 @@ extern "C" {
 #define GPIO_C_IRQHANDLER PORTC_IRQHandler
 /* Definition of peripheral ID */
 #define RTC_1_PERIPHERAL RTC
+/* Alias for ADC0 peripheral */
+#define CAMERA_ADC_PERIPHERAL ADC0
+/* Camera_ADC interrupt vector ID (number). */
+#define CAMERA_ADC_IRQN ADC0_IRQn
+/* Camera_ADC interrupt handler identifier. */
+#define CAMERA_ADC_IRQHANDLER ADC0_IRQHandler
 
 /***********************************************************************************************************************
  * Global variables
@@ -80,6 +87,10 @@ extern const ftm_config_t Servo_PWM_config;
 extern const i2c_master_config_t User_I2C_config;
 extern const uart_config_t UART_0_config;
 extern const rtc_config_t RTC_1_config;
+extern adc16_channel_config_t Camera_ADC_channelsConfig[1];
+extern const adc16_config_t Camera_ADC_config;
+extern const adc16_channel_mux_mode_t Camera_ADC_muxMode;
+extern const adc16_hardware_average_mode_t Camera_ADC_hardwareAverageMode;
 
 /***********************************************************************************************************************
  * Initialization functions
