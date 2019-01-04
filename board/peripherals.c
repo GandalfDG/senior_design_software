@@ -306,6 +306,113 @@ void UART_0_init(void) {
 }
 
 /***********************************************************************************************************************
+ * GPIO_A initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'GPIO_A'
+- type: 'gpio'
+- mode: 'GPIO'
+- type_id: 'gpio_be9de87e5addb6b0f416d9acbab34797'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'GPIOA'
+- config_sets:
+  - fsl_gpio:
+    - enable_irq: 'true'
+    - port_interrupt:
+      - IRQn: 'PORTA_IRQn'
+      - enable_priority: 'false'
+      - enable_custom_name: 'false'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+
+void GPIO_A_init(void) {
+  /* Make sure, the clock gate for port A is enabled (e. g. in pin_mux.c) */
+  /* Enable interrupt PORTA_IRQn request in the NVIC */
+  EnableIRQ(PORTA_IRQn);
+}
+
+/***********************************************************************************************************************
+ * GPIO_C initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'GPIO_C'
+- type: 'gpio'
+- mode: 'GPIO'
+- type_id: 'gpio_be9de87e5addb6b0f416d9acbab34797'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'GPIOC'
+- config_sets:
+  - fsl_gpio:
+    - enable_irq: 'true'
+    - port_interrupt:
+      - IRQn: 'PORTC_IRQn'
+      - enable_priority: 'false'
+      - enable_custom_name: 'false'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+
+void GPIO_C_init(void) {
+  /* Make sure, the clock gate for port C is enabled (e. g. in pin_mux.c) */
+  /* Enable interrupt PORTC_IRQn request in the NVIC */
+  EnableIRQ(PORTC_IRQn);
+}
+
+/***********************************************************************************************************************
+ * RTC_1 initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'RTC_1'
+- type: 'rtc'
+- mode: 'general'
+- type_id: 'rtc_5a0edd77b33c110032c2a0f5e3d1bd2f'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'RTC'
+- config_sets:
+  - fsl_rtc:
+    - clockConfig_t: []
+    - rtc_config:
+      - updateMode: 'false'
+      - supervisorAccess: 'false'
+      - compensationIntervalInt: '1'
+      - compensationTimeInt: '0'
+      - setDateTime: 'false'
+      - setAlarm: 'false'
+      - start: 'false'
+    - interruptsCfg:
+      - interruptSources: ''
+      - isSecondsInterruptEnabled: 'false'
+      - secondsInterrupt:
+        - IRQn: 'RTC_Seconds_IRQn'
+        - enable_priority: 'false'
+        - enable_custom_name: 'false'
+      - isInterruptEnabled: 'false'
+      - commonInterrupt:
+        - IRQn: 'RTC_IRQn'
+        - enable_priority: 'false'
+        - enable_custom_name: 'false'
+    - quick_selection: 'QuickSelection1'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+const rtc_config_t RTC_1_config = {
+  .wakeupSelect = false,
+  .updateMode = false,
+  .supervisorAccess = false,
+  .compensationInterval = 0x0U,
+  .compensationTime = 0x0U
+};
+
+void RTC_1_init(void) {
+  /* RTC initialization */
+  RTC_Init(RTC_1_PERIPHERAL, &RTC_1_config);
+}
+
+/***********************************************************************************************************************
  * Initialization functions
  **********************************************************************************************************************/
 void BOARD_InitPeripherals(void)
@@ -315,6 +422,9 @@ void BOARD_InitPeripherals(void)
   Servo_PWM_init();
   User_I2C_init();
   UART_0_init();
+  GPIO_A_init();
+  GPIO_C_init();
+  RTC_1_init();
 }
 
 /***********************************************************************************************************************

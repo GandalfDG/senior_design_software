@@ -14,6 +14,9 @@
 #include "fsl_ftm.h"
 #include "fsl_i2c.h"
 #include "fsl_uart.h"
+#include "fsl_gpio.h"
+#include "fsl_port.h"
+#include "fsl_rtc.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -50,6 +53,24 @@ extern "C" {
 #define UART_0_PERIPHERAL UART0
 /* Definition of the clock source frequency */
 #define UART_0_CLOCK_SOURCE CLOCK_GetFreq(UART0_CLK_SRC)
+/* Alias for GPIOA peripheral */
+#define GPIO_A_GPIO GPIOA
+/* Alias for PORTA */
+#define GPIO_A_PORT PORTA
+/* GPIO_A interrupt vector ID (number). */
+#define GPIO_A_IRQN PORTA_IRQn
+/* GPIO_A interrupt handler identifier. */
+#define GPIO_A_IRQHANDLER PORTA_IRQHandler
+/* Alias for GPIOC peripheral */
+#define GPIO_C_GPIO GPIOC
+/* Alias for PORTC */
+#define GPIO_C_PORT PORTC
+/* GPIO_C interrupt vector ID (number). */
+#define GPIO_C_IRQN PORTC_IRQn
+/* GPIO_C interrupt handler identifier. */
+#define GPIO_C_IRQHANDLER PORTC_IRQHandler
+/* Definition of peripheral ID */
+#define RTC_1_PERIPHERAL RTC
 
 /***********************************************************************************************************************
  * Global variables
@@ -58,6 +79,7 @@ extern const ftm_config_t Motor_PWM_config;
 extern const ftm_config_t Servo_PWM_config;
 extern const i2c_master_config_t User_I2C_config;
 extern const uart_config_t UART_0_config;
+extern const rtc_config_t RTC_1_config;
 
 /***********************************************************************************************************************
  * Initialization functions

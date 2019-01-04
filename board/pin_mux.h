@@ -27,6 +27,12 @@ void BOARD_InitBootPins(void);
 
 #define SOPT4_FTM2CH0SRC_FTM 0x00u /*!<@brief FTM2 channel 0 input capture source select: FTM2_CH0 signal */
 
+/*! @name PORTB2 (number 55), J4[2]
+  @{ */
+#define BOARD_ADC0_SE12_PORT PORTB /*!<@brief PORT device name: PORTB */
+#define BOARD_ADC0_SE12_PIN 2U     /*!<@brief PORTB pin index: 2 */
+                                   /* @} */
+
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
  *

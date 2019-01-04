@@ -146,6 +146,8 @@ BOARD_InitPins:
   - {pin_num: '73', peripheral: FTM0, signal: 'CH, 2', pin_signal: CMP1_IN1/PTC3/LLWU_P7/SPI0_PCS1/UART1_RX/FTM0_CH2/CLKOUT/I2S0_TX_BCLK}
   - {pin_num: '76', peripheral: FTM0, signal: 'CH, 3', pin_signal: PTC4/LLWU_P8/SPI0_PCS0/UART1_TX/FTM0_CH3/FB_AD11/CMP1_OUT}
   - {pin_num: '64', peripheral: FTM2, signal: 'CH, 0', pin_signal: PTB18/CAN0_TX/FTM2_CH0/I2S0_TX_BCLK/FB_AD15/FTM2_QD_PHA}
+  - {pin_num: '55', peripheral: I2C0, signal: SCL, pin_signal: ADC0_SE12/PTB2/I2C0_SCL/UART0_RTS_b/ENET0_1588_TMR0/FTM0_FLT3}
+  - {pin_num: '56', peripheral: I2C0, signal: SDA, pin_signal: ADC0_SE13/PTB3/I2C0_SDA/UART0_CTS_b/UART0_COL_b/ENET0_1588_TMR1/FTM0_FLT0}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -165,6 +167,12 @@ void BOARD_InitPins(void)
 
     /* PORTB18 (pin 64) is configured as FTM2_CH0 */
     PORT_SetPinMux(PORTB, 18U, kPORT_MuxAlt3);
+
+    /* PORTB2 (pin 55) is configured as I2C0_SCL */
+    PORT_SetPinMux(BOARD_ADC0_SE12_PORT, BOARD_ADC0_SE12_PIN, kPORT_MuxAlt2);
+
+    /* PORTB3 (pin 56) is configured as I2C0_SDA */
+    PORT_SetPinMux(PORTB, 3U, kPORT_MuxAlt2);
 
     /* PORTC1 (pin 71) is configured as FTM0_CH0 */
     PORT_SetPinMux(PORTC, 1U, kPORT_MuxAlt4);
