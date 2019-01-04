@@ -13,6 +13,7 @@
 #include "fsl_clock.h"
 #include "fsl_ftm.h"
 #include "fsl_i2c.h"
+#include "fsl_uart.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -45,6 +46,10 @@ extern "C" {
 #define USER_I2C_CLOCK_SOURCE I2C0_CLK_SRC
 /* Definition of the clock source frequency */
 #define USER_I2C_CLK_FREQ CLOCK_GetFreq(USER_I2C_CLOCK_SOURCE)
+/* Definition of peripheral ID */
+#define UART_0_PERIPHERAL UART0
+/* Definition of the clock source frequency */
+#define UART_0_CLOCK_SOURCE CLOCK_GetFreq(UART0_CLK_SRC)
 
 /***********************************************************************************************************************
  * Global variables
@@ -52,6 +57,7 @@ extern "C" {
 extern const ftm_config_t Motor_PWM_config;
 extern const ftm_config_t Servo_PWM_config;
 extern const i2c_master_config_t User_I2C_config;
+extern const uart_config_t UART_0_config;
 
 /***********************************************************************************************************************
  * Initialization functions
