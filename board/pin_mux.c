@@ -150,6 +150,8 @@ BOARD_InitPins:
   - {pin_num: '56', peripheral: I2C0, signal: SDA, pin_signal: ADC0_SE13/PTB3/I2C0_SDA/UART0_CTS_b/UART0_COL_b/ENET0_1588_TMR1/FTM0_FLT0}
   - {peripheral: ADC0, signal: 'TRG, A', pin_signal: Flex_timer_2}
   - {pin_num: '18', peripheral: ADC0, signal: 'SE, 0', pin_signal: ADC0_DP0/ADC1_DP3}
+  - {pin_num: '94', peripheral: GPIOD, signal: 'GPIO, 1', pin_signal: ADC0_SE5b/PTD1/SPI0_SCK/UART2_CTS_b/FTM3_CH1/FB_CS0_b}
+  - {pin_num: '96', peripheral: GPIOD, signal: 'GPIO, 3', pin_signal: PTD3/SPI0_SIN/UART2_TX/FTM3_CH3/FB_AD3/I2C0_SDA}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -166,6 +168,8 @@ void BOARD_InitPins(void)
     CLOCK_EnableClock(kCLOCK_PortB);
     /* Port C Clock Gate Control: Clock enabled */
     CLOCK_EnableClock(kCLOCK_PortC);
+    /* Port D Clock Gate Control: Clock enabled */
+    CLOCK_EnableClock(kCLOCK_PortD);
 
     /* PORTB18 (pin 64) is configured as FTM2_CH0 */
     PORT_SetPinMux(PORTB, 18U, kPORT_MuxAlt3);
@@ -187,6 +191,12 @@ void BOARD_InitPins(void)
 
     /* PORTC4 (pin 76) is configured as FTM0_CH3 */
     PORT_SetPinMux(PORTC, 4U, kPORT_MuxAlt4);
+
+    /* PORTD1 (pin 94) is configured as PTD1 */
+    PORT_SetPinMux(PORTD, 1U, kPORT_MuxAsGpio);
+
+    /* PORTD3 (pin 96) is configured as PTD3 */
+    PORT_SetPinMux(BOARD_UART2_TX_PORT, BOARD_UART2_TX_PIN, kPORT_MuxAsGpio);
 
     SIM->SOPT4 = ((SIM->SOPT4 &
                    /* Mask bits to zero which are setting */

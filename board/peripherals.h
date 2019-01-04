@@ -78,6 +78,22 @@ extern "C" {
 #define CAMERA_ADC_IRQN ADC0_IRQn
 /* Camera_ADC interrupt handler identifier. */
 #define CAMERA_ADC_IRQHANDLER ADC0_IRQHandler
+/* Definition of peripheral ID */
+#define FTM_1_PERIPHERAL FTM3
+/* Definition of the clock source frequency */
+#define FTM_1_CLOCK_SOURCE CLOCK_GetFreq(kCLOCK_BusClk)
+/* FTM_1 interrupt vector ID (number). */
+#define FTM_1_IRQN FTM3_IRQn
+/* FTM_1 interrupt handler identifier. */
+#define FTM_1_IRQHANDLER FTM3_IRQHandler
+/* Alias for GPIOD peripheral */
+#define GPIO_D_GPIO GPIOD
+/* Alias for PORTD */
+#define GPIO_D_PORT PORTD
+/* GPIO_D interrupt vector ID (number). */
+#define GPIO_D_IRQN PORTD_IRQn
+/* GPIO_D interrupt handler identifier. */
+#define GPIO_D_IRQHANDLER PORTD_IRQHandler
 
 /***********************************************************************************************************************
  * Global variables
@@ -91,6 +107,7 @@ extern adc16_channel_config_t Camera_ADC_channelsConfig[1];
 extern const adc16_config_t Camera_ADC_config;
 extern const adc16_channel_mux_mode_t Camera_ADC_muxMode;
 extern const adc16_hardware_average_mode_t Camera_ADC_hardwareAverageMode;
+extern const ftm_config_t FTM_1_config;
 
 /***********************************************************************************************************************
  * Initialization functions

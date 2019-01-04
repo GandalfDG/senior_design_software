@@ -36,6 +36,13 @@ void BOARD_InitBootPins(void);
 #define BOARD_ADC0_SE12_PIN 2U     /*!<@brief PORTB pin index: 2 */
                                    /* @} */
 
+/*! @name PORTD3 (number 96), J2[10]
+  @{ */
+#define BOARD_UART2_TX_GPIO GPIOD /*!<@brief GPIO device name: GPIOD */
+#define BOARD_UART2_TX_PORT PORTD /*!<@brief PORT device name: PORTD */
+#define BOARD_UART2_TX_PIN 3U     /*!<@brief PORTD pin index: 3 */
+                                  /* @} */
+
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
  *
