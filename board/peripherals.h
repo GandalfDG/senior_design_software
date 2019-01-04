@@ -12,6 +12,7 @@
 #include "fsl_common.h"
 #include "fsl_clock.h"
 #include "fsl_ftm.h"
+#include "fsl_i2c.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -37,12 +38,20 @@ extern "C" {
 #define SERVO_PWM_IRQN FTM2_IRQn
 /* Servo_PWM interrupt handler identifier. */
 #define SERVO_PWM_IRQHANDLER FTM2_IRQHandler
+/* BOARD_InitPeripherals defines for I2C0 */
+/* Definition of peripheral ID */
+#define USER_I2C_PERIPHERAL I2C0
+/* Definition of the clock source */
+#define USER_I2C_CLOCK_SOURCE I2C0_CLK_SRC
+/* Definition of the clock source frequency */
+#define USER_I2C_CLK_FREQ CLOCK_GetFreq(USER_I2C_CLOCK_SOURCE)
 
 /***********************************************************************************************************************
  * Global variables
  **********************************************************************************************************************/
 extern const ftm_config_t Motor_PWM_config;
 extern const ftm_config_t Servo_PWM_config;
+extern const i2c_master_config_t User_I2C_config;
 
 /***********************************************************************************************************************
  * Initialization functions

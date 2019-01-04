@@ -226,6 +226,43 @@ void Servo_PWM_init(void) {
 }
 
 /***********************************************************************************************************************
+ * User_I2C initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'User_I2C'
+- type: 'i2c'
+- mode: 'I2C_Polling'
+- type_id: 'i2c_2566d7363e7e9aaedabb432110e372d7'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'I2C0'
+- config_sets:
+  - fsl_i2c:
+    - i2c_mode: 'kI2C_Master'
+    - clockSource: 'BusInterfaceClock'
+    - clockSourceFreq: 'GetFreq'
+    - i2c_master_config:
+      - enableMaster: 'true'
+      - enableStopHold: 'false'
+      - baudRate_Bps: '100000'
+      - glitchFilterWidth: '0'
+    - quick_selection: 'QS_I2C_1'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+const i2c_master_config_t User_I2C_config = {
+  .enableMaster = true,
+  .enableStopHold = false,
+  .baudRate_Bps = 100000,
+  .glitchFilterWidth = 0
+};
+
+void User_I2C_init(void) {
+  /* Initialization function */
+  I2C_MasterInit(USER_I2C_PERIPHERAL, &User_I2C_config, USER_I2C_CLK_FREQ);
+}
+
+/***********************************************************************************************************************
  * Initialization functions
  **********************************************************************************************************************/
 void BOARD_InitPeripherals(void)
@@ -233,6 +270,7 @@ void BOARD_InitPeripherals(void)
   /* Initialize components */
   Motor_PWM_init();
   Servo_PWM_init();
+  User_I2C_init();
 }
 
 /***********************************************************************************************************************
