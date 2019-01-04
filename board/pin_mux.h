@@ -25,6 +25,8 @@ extern "C" {
  */
 void BOARD_InitBootPins(void);
 
+#define SOPT4_FTM2CH0SRC_FTM 0x00u /*!<@brief FTM2 channel 0 input capture source select: FTM2_CH0 signal */
+
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
  *

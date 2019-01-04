@@ -145,6 +145,7 @@ BOARD_InitPins:
   - {pin_num: '72', peripheral: FTM0, signal: 'CH, 1', pin_signal: ADC0_SE4b/CMP1_IN0/PTC2/SPI0_PCS2/UART1_CTS_b/FTM0_CH1/FB_AD12/I2S0_TX_FS}
   - {pin_num: '73', peripheral: FTM0, signal: 'CH, 2', pin_signal: CMP1_IN1/PTC3/LLWU_P7/SPI0_PCS1/UART1_RX/FTM0_CH2/CLKOUT/I2S0_TX_BCLK}
   - {pin_num: '76', peripheral: FTM0, signal: 'CH, 3', pin_signal: PTC4/LLWU_P8/SPI0_PCS0/UART1_TX/FTM0_CH3/FB_AD11/CMP1_OUT}
+  - {pin_num: '64', peripheral: FTM2, signal: 'CH, 0', pin_signal: PTB18/CAN0_TX/FTM2_CH0/I2S0_TX_BCLK/FB_AD15/FTM2_QD_PHA}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -157,8 +158,13 @@ BOARD_InitPins:
  * END ****************************************************************************************************************/
 void BOARD_InitPins(void)
 {
+    /* Port B Clock Gate Control: Clock enabled */
+    CLOCK_EnableClock(kCLOCK_PortB);
     /* Port C Clock Gate Control: Clock enabled */
     CLOCK_EnableClock(kCLOCK_PortC);
+
+    /* PORTB18 (pin 64) is configured as FTM2_CH0 */
+    PORT_SetPinMux(PORTB, 18U, kPORT_MuxAlt3);
 
     /* PORTC1 (pin 71) is configured as FTM0_CH0 */
     PORT_SetPinMux(PORTC, 1U, kPORT_MuxAlt4);
@@ -171,6 +177,13 @@ void BOARD_InitPins(void)
 
     /* PORTC4 (pin 76) is configured as FTM0_CH3 */
     PORT_SetPinMux(PORTC, 4U, kPORT_MuxAlt4);
+
+    SIM->SOPT4 = ((SIM->SOPT4 &
+                   /* Mask bits to zero which are setting */
+                   (~(SIM_SOPT4_FTM2CH0SRC_MASK)))
+
+                  /* FTM2 channel 0 input capture source select: FTM2_CH0 signal. */
+                  | SIM_SOPT4_FTM2CH0SRC(SOPT4_FTM2CH0SRC_FTM));
 }
 
 /* clang-format off */

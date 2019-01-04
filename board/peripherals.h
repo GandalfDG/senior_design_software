@@ -29,11 +29,20 @@ extern "C" {
 #define MOTOR_PWM_IRQN FTM0_IRQn
 /* Motor_PWM interrupt handler identifier. */
 #define MOTOR_PWM_IRQHANDLER FTM0_IRQHandler
+/* Definition of peripheral ID */
+#define SERVO_PWM_PERIPHERAL FTM2
+/* Definition of the clock source frequency */
+#define SERVO_PWM_CLOCK_SOURCE CLOCK_GetFreq(kCLOCK_BusClk)
+/* Servo_PWM interrupt vector ID (number). */
+#define SERVO_PWM_IRQN FTM2_IRQn
+/* Servo_PWM interrupt handler identifier. */
+#define SERVO_PWM_IRQHANDLER FTM2_IRQHandler
 
 /***********************************************************************************************************************
  * Global variables
  **********************************************************************************************************************/
 extern const ftm_config_t Motor_PWM_config;
+extern const ftm_config_t Servo_PWM_config;
 
 /***********************************************************************************************************************
  * Initialization functions
