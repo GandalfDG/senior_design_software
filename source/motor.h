@@ -11,7 +11,7 @@
 #include "MK64F12.h"
 #include "peripherals.h"
 
-class motor {
+class Motor {
 public:
 	enum direction {
 		FORWARD,
@@ -21,7 +21,7 @@ public:
 	static FTM_Type* pwm_ftm_base;
 	static FTM_Type* encoder_ftm_base;
 
-	motor(ftm_chnl_t fwd, ftm_chnl_t rev);
+	Motor(ftm_chnl_t fwd, ftm_chnl_t rev);
 
 	void set_speed(uint8_t rotation_speed);
 	void set_direction(direction dir);
