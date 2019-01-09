@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 /**
  * @file    NXP_Car_Drive.cpp
  * @brief   Application entry point.
@@ -39,29 +39,47 @@
 #include "clock_config.h"
 #include "MK64F12.h"
 #include "fsl_debug_console.h"
+
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "timers.h"
 /* TODO: insert other include files here. */
 
 /* TODO: insert other definitions and declarations here. */
+#define hello_task_PRIORITY (configMAX_PRIORITIES - 1)
+static void hello_task(void*);
 
 /*
  * @brief   Application entry point.
  */
 int main(void) {
 
-  	/* Init board hardware. */
-    BOARD_InitBootPins();
-    BOARD_InitBootClocks();
-    BOARD_InitBootPeripherals();
-  	/* Init FSL debug console. */
-    BOARD_InitDebugConsole();
+	/* Init board hardware. */
+	BOARD_InitBootPins();
+	BOARD_InitBootClocks();
+	BOARD_InitBootPeripherals();
+	/* Init FSL debug console. */
+	BOARD_InitDebugConsole();
 
-    PRINTF("Hello World\n");
-
-    /* Force the counter to be placed into memory. */
-    volatile static int i = 0 ;
-    /* Enter an infinite loop, just incrementing a counter. */
-    while(1) {
-        i++ ;
-    }
-    return 0 ;
+	if (xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE + 20,
+	NULL, hello_task_PRIORITY, NULL) != pdPASS) {
+		PRINTF("Task creation failed!.\r\n");
+		while (1)
+			;
+	}
+	vTaskStartScheduler();
+	for (;;)
+		;
 }
+
+/*!
+ * @brief Task responsible for printing of "Hello world." message.
+ */
+static void hello_task(void *pvParameters) {
+	for (;;) {
+		PRINTF("Hello world.\r\n");
+		vTaskDelay(pdMS_TO_TICKS(1000));
+	}
+}
+
