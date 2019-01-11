@@ -1170,14 +1170,14 @@
                      </config_set>
                   </instance>
                   <instance name="User_I2C" type="i2c" type_id="i2c_2566d7363e7e9aaedabb432110e372d7" mode="I2C_Polling" peripheral="I2C0" enabled="true">
-                     <config_set name="fsl_i2c" quick_selection="QS_I2C_1">
+                     <config_set name="fsl_i2c">
                         <setting name="i2c_mode" value="kI2C_Master"/>
                         <setting name="clockSource" value="BusInterfaceClock"/>
                         <setting name="clockSourceFreq" value="GetFreq"/>
                         <struct name="i2c_master_config">
                            <setting name="enableMaster" value="true"/>
                            <setting name="enableStopHold" value="false"/>
-                           <setting name="baudRate_Bps" value="100000"/>
+                           <setting name="baudRate_Bps" value="1000"/>
                            <setting name="glitchFilterWidth" value="0"/>
                         </struct>
                      </config_set>

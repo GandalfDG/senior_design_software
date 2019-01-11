@@ -25,7 +25,11 @@ public:
 	uint16_t readGPIOAB();
 
 private:
+	I2C_Type* peripheral_base = USER_I2C_PERIPHERAL;
 	uint8_t i2caddr;
+	i2c_master_transfer_t xfer_struct;
+
+	status_t writeSingleByte(uint8_t address, uint8_t data);
 };
 
 #define MCP23017_ADDRESS 0x20
