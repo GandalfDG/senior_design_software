@@ -1,15 +1,27 @@
-/*
- * UserInterface.h
- *
- *  Created on: Jan 6, 2019
- *      Author: Jack
- */
+/***************************************************
+  This is a library for the Adafruit RGB 16x2 LCD Shield
+  Pick one up at the Adafruit shop!
+  ---------> http://http://www.adafruit.com/products/714
+  The shield uses I2C to communicate, 2 pins are required to
+  interface
+  Adafruit invests time and resources providing this open source code,
+  please support Adafruit and open-source hardware by purchasing
+  products from Adafruit!
+  Written by Limor Fried/Ladyada for Adafruit Industries.
+  BSD license, all text above must be included in any redistribution
+ ****************************************************/
 
 #ifndef USERINTERFACE_H_
 #define USERINTERFACE_H_
 
 #include "MK64F12.h"
 #include "peripherals.h"
+#include "PortExpander.h"
+
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "timers.h"
 
 // commands
 #define LCD_CLEARDISPLAY 0x01
@@ -114,6 +126,7 @@ private:
 	uint8_t _numlines, _currline;
 
 	uint8_t _i2cAddr;
+	PortExpander _i2c;
 };
 
 #endif /* USERINTERFACE_H_ */

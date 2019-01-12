@@ -1,9 +1,13 @@
-/*
- * PortExpander.h
- *
- *  Created on: Jan 11, 2019
- *      Author: Jack
- */
+/***************************************************
+  This is a library for the MCP23017 i2c port expander
+  These displays use I2C to communicate, 2 pins are required to
+  interface
+  Adafruit invests time and resources providing this open source code,
+  please support Adafruit and open-source hardware by purchasing
+  products from Adafruit!
+  Written by Limor Fried/Ladyada for Adafruit Industries.
+  BSD license, all text above must be included in any redistribution
+ ****************************************************/
 
 #ifndef PORTEXPANDER_H_
 #define PORTEXPANDER_H_
@@ -65,6 +69,8 @@ private:
 #define MCP23017_OLATB 0x15
 
 #define INPUT 1
+#define OUTPUT 0
 #define HIGH 1
+#define LOW 0
 
 #endif /* PORTEXPANDER_H_ */
