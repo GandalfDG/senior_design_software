@@ -30,6 +30,10 @@ private:
 	i2c_master_transfer_t xfer_struct;
 
 	status_t writeSingleByte(uint8_t address, uint8_t data);
+	status_t writeSequentialBytes(uint8_t start_address,
+			uint8_t* data, size_t data_size);
+
+	uint8_t readSingleByte(uint8_t address);
 };
 
 #define MCP23017_ADDRESS 0x20
@@ -59,5 +63,7 @@ private:
 #define MCP23017_INTCAPB 0x11
 #define MCP23017_GPIOB 0x13
 #define MCP23017_OLATB 0x15
+
+#define INPUT 1
 
 #endif /* PORTEXPANDER_H_ */
