@@ -13,13 +13,11 @@ void PortExpander::begin(uint8_t addr) {
 	}
 
 	i2caddr = addr;
-	uint8_t data = 0xff;
 
 	// set defaults
 	writeSingleByte(MCP23017_IODIRA, 0xFF);
 	writeSingleByte(MCP23017_IODIRB, 0xFF);
 
-	uint8_t test = readSingleByte(MCP23017_IODIRA);
 }
 
 void PortExpander::begin(void) {
@@ -56,6 +54,34 @@ void PortExpander::pinMode(uint8_t p, uint8_t d) {
 }
 
 void PortExpander::digitalWrite(uint8_t p, uint8_t d) {
+	uint8_t gpio;
+	uint8_t gpioaddr, olataddr;
+
+	// only 16 bits!
+	if (p > 15)
+		return;
+
+	if (p < 8) {
+		olataddr = MCP23017_OLATA;
+		gpioaddr = MCP23017_GPIOA;
+	} else {
+		olataddr = MCP23017_OLATB;
+		gpioaddr = MCP23017_GPIOB;
+		p -= 8;
+	}
+
+	// read the current FPIO output latches
+	readSingleByte(olataddr);
+
+	// set the pin and direction
+	if (d == HIGH) {
+		gpio |= 1 << p;
+	} else {
+		gpio &= ~(1 << p);
+	}
+
+	// write the new GPIO
+	writeSingleByte(gpioaddr, gpio);
 }
 
 void PortExpander::pullUp(uint8_t p, uint8_t d) {
@@ -64,7 +90,9 @@ void PortExpander::pullUp(uint8_t p, uint8_t d) {
 uint8_t PortExpander::digitalRead(uint8_t p) {
 }
 
-void PortExpander::writeGPIOAB(uint16_t unsignedShortInt) {
+void PortExpander::writeGPIOAB(uint16_t ba) {
+	writeSingleByte(MCP23017_GPIOA, ba & 0xFF);
+	writeSingleByte(MCP23017_GPIOB, ba >> 8);
 }
 
 uint16_t PortExpander::readGPIOAB() {

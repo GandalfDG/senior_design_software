@@ -65,5 +65,6 @@ private:
 #define MCP23017_OLATB 0x15
 
 #define INPUT 1
+#define HIGH 1
 
 #endif /* PORTEXPANDER_H_ */
