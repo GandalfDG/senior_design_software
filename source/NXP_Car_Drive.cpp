@@ -44,6 +44,9 @@
 #include "task.h"
 #include "queue.h"
 #include "timers.h"
+
+#include "Motor.h"
+#include "PortExpander.h"
 /* TODO: insert other include files here. */
 
 /* TODO: insert other definitions and declarations here. */
@@ -61,6 +64,10 @@ int main(void) {
 	BOARD_InitBootPeripherals();
 	/* Init FSL debug console. */
 	BOARD_InitDebugConsole();
+
+	PortExpander expander;
+
+	expander.begin();
 
 	if (xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE + 20,
 	NULL, hello_task_PRIORITY, NULL) != pdPASS) {

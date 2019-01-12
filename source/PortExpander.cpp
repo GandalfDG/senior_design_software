@@ -18,6 +18,7 @@ void PortExpander::begin(uint8_t addr) {
 	writeSingleByte(MCP23017_IODIRA, 0xFF);
 	writeSingleByte(MCP23017_IODIRB, 0xFF);
 
+	uint8_t test = readSingleByte(MCP23017_IODIRA);
 }
 
 void PortExpander::begin(void) {
@@ -54,7 +55,7 @@ void PortExpander::pinMode(uint8_t p, uint8_t d) {
 }
 
 void PortExpander::digitalWrite(uint8_t p, uint8_t d) {
-	uint8_t gpio;
+	uint8_t gpio = 0;
 	uint8_t gpioaddr, olataddr;
 
 	// only 16 bits!
@@ -85,9 +86,50 @@ void PortExpander::digitalWrite(uint8_t p, uint8_t d) {
 }
 
 void PortExpander::pullUp(uint8_t p, uint8_t d) {
+	uint8_t gppu;
+	uint8_t gppuaddr;
+
+	// only 16 bits!
+	if (p > 15)
+		return;
+
+	if (p < 8)
+		gppuaddr = MCP23017_GPPUA;
+	else {
+		gppuaddr = MCP23017_GPPUB;
+		p -= 8;
+	}
+
+	// read the current pullup resistor set
+	gppu = readSingleByte(gppuaddr);
+
+	// set the pin and direction
+	if (d == HIGH) {
+		gppu |= 1 << p;
+	} else {
+		gppu &= ~(1 << p);
+	}
+
+	// write the new GPIO
+	writeSingleByte(gppuaddr, gppu);
 }
 
 uint8_t PortExpander::digitalRead(uint8_t p) {
+	uint8_t gpioaddr;
+
+	// only 16 bits!
+	if (p > 15)
+		return 0;
+
+	if (p < 8)
+		gpioaddr = MCP23017_GPIOA;
+	else {
+		gpioaddr = MCP23017_GPIOB;
+		p -= 8;
+	}
+
+	// read the current GPIO
+	return (readSingleByte(gpioaddr) >> p) & 0x01;
 }
 
 void PortExpander::writeGPIOAB(uint16_t ba) {
@@ -150,22 +192,21 @@ status_t PortExpander::writeSequentialBytes(uint8_t start_address,
 }
 
 uint8_t PortExpander::readSingleByte(uint8_t address) {
-	status_t status = kStatus_Success;
 	uint8_t data;
 	// send a start signal with the address of the port expander
-	status = I2C_MasterStart(peripheral_base, (MCP23017_ADDRESS | i2caddr),
+	I2C_MasterStart(peripheral_base, (MCP23017_ADDRESS | i2caddr),
 			kI2C_Write);
 
 	// send the address to read from
-	status = I2C_MasterWriteBlocking(peripheral_base, &address, 1,
+	I2C_MasterWriteBlocking(peripheral_base, &address, 1,
 			kI2C_TransferNoStopFlag);
 
 	// read from the given register address into the data buffer
-	status = I2C_MasterReadBlocking(peripheral_base, &data, 1,
+	I2C_MasterReadBlocking(peripheral_base, &data, 1,
 			kI2C_TransferNoStopFlag);
 
 	// end the connection
-	status = I2C_MasterStop(peripheral_base);
+	I2C_MasterStop(peripheral_base);
 
 	return data;
 }
