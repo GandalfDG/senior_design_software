@@ -9,7 +9,9 @@
   BSD license, all text above must be included in any redistribution
  ****************************************************/
 
-#include <PortExpander.h>
+#include <PortExpander.h>''
+
+#define DEBUG_I2C
 
 void PortExpander::begin(uint8_t addr) {
 	if (addr > 7) {
@@ -19,8 +21,8 @@ void PortExpander::begin(uint8_t addr) {
 	i2caddr = addr;
 
 	// set defaults
-	writeSingleByte(MCP23017_IODIRA, 0xFF);
-	writeSingleByte(MCP23017_IODIRB, 0xFF);
+	writeSingleByte(MCP23017_IODIRA, 0xBE);
+	writeSingleByte(MCP23017_IODIRB, 0xBE);
 
 	uint8_t test = readSingleByte(MCP23017_IODIRA);
 }
@@ -171,6 +173,10 @@ status_t PortExpander::writeSingleByte(uint8_t address, uint8_t data) {
 	// end the connection
 	status = I2C_MasterStop(peripheral_base);
 
+#ifdef DEBUG_I2C
+	uint8_t test = readSingleByte(address);
+#endif
+
 	return status;
 }
 
@@ -204,6 +210,9 @@ uint8_t PortExpander::readSingleByte(uint8_t address) {
 	// send the address to read from
 	I2C_MasterWriteBlocking(peripheral_base, &address, 1,
 			kI2C_TransferNoStopFlag);
+
+	// send repeated start for read
+	I2C_MasterRepeatedStart(peripheral_base, address, kI2C_Read);
 
 	// read from the given register address into the data buffer
 	I2C_MasterReadBlocking(peripheral_base, &data, 1,

@@ -47,11 +47,14 @@
 
 #include "Motor.h"
 #include "PortExpander.h"
+#include "UserInterface.h"
 /* TODO: insert other include files here. */
 
 /* TODO: insert other definitions and declarations here. */
 #define hello_task_PRIORITY (configMAX_PRIORITIES - 1)
 static void hello_task(void*);
+
+User_Interface interface;
 
 /*
  * @brief   Application entry point.
@@ -84,6 +87,8 @@ int main(void) {
  * @brief Task responsible for printing of "Hello world." message.
  */
 static void hello_task(void *pvParameters) {
+	interface.begin(16, 2);
+	interface.setBacklight(0x7);
 	for (;;) {
 		PRINTF("Hello world.\r\n");
 		vTaskDelay(pdMS_TO_TICKS(1000));
