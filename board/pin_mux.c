@@ -146,8 +146,6 @@ BOARD_InitPins:
   - {pin_num: '73', peripheral: FTM0, signal: 'CH, 2', pin_signal: CMP1_IN1/PTC3/LLWU_P7/SPI0_PCS1/UART1_RX/FTM0_CH2/CLKOUT/I2S0_TX_BCLK}
   - {pin_num: '76', peripheral: FTM0, signal: 'CH, 3', pin_signal: PTC4/LLWU_P8/SPI0_PCS0/UART1_TX/FTM0_CH3/FB_AD11/CMP1_OUT}
   - {pin_num: '64', peripheral: FTM2, signal: 'CH, 0', pin_signal: PTB18/CAN0_TX/FTM2_CH0/I2S0_TX_BCLK/FB_AD15/FTM2_QD_PHA}
-  - {pin_num: '55', peripheral: I2C0, signal: SCL, pin_signal: ADC0_SE12/PTB2/I2C0_SCL/UART0_RTS_b/ENET0_1588_TMR0/FTM0_FLT3}
-  - {pin_num: '56', peripheral: I2C0, signal: SDA, pin_signal: ADC0_SE13/PTB3/I2C0_SDA/UART0_CTS_b/UART0_COL_b/ENET0_1588_TMR1/FTM0_FLT0}
   - {pin_num: '18', peripheral: ADC0, signal: 'SE, 0', pin_signal: ADC0_DP0/ADC1_DP3}
   - {pin_num: '94', peripheral: GPIOD, signal: 'GPIO, 1', pin_signal: ADC0_SE5b/PTD1/SPI0_SCK/UART2_CTS_b/FTM3_CH1/FB_CS0_b}
   - {pin_num: '96', peripheral: GPIOD, signal: 'GPIO, 3', pin_signal: PTD3/SPI0_SIN/UART2_TX/FTM3_CH3/FB_AD3/I2C0_SDA}
@@ -156,6 +154,8 @@ BOARD_InitPins:
   - {pin_num: '82', peripheral: FTM3, signal: 'CH, 6', pin_signal: ADC1_SE6b/PTC10/I2C1_SCL/FTM3_CH6/I2S0_RX_FS/FB_AD5}
   - {pin_num: '83', peripheral: FTM3, signal: 'CH, 7', pin_signal: ADC1_SE7b/PTC11/LLWU_P11/I2C1_SDA/FTM3_CH7/I2S0_RXD1/FB_RW_b}
   - {peripheral: ADC0, signal: 'TRG, A', pin_signal: Flex_timer_1}
+  - {pin_num: '31', peripheral: I2C0, signal: SCL, pin_signal: ADC0_SE17/PTE24/UART4_TX/I2C0_SCL/EWM_OUT_b, identifier: ''}
+  - {pin_num: '32', peripheral: I2C0, signal: SDA, pin_signal: ADC0_SE18/PTE25/UART4_RX/I2C0_SDA/EWM_IN, identifier: ''}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -174,15 +174,11 @@ void BOARD_InitPins(void)
     CLOCK_EnableClock(kCLOCK_PortC);
     /* Port D Clock Gate Control: Clock enabled */
     CLOCK_EnableClock(kCLOCK_PortD);
+    /* Port E Clock Gate Control: Clock enabled */
+    CLOCK_EnableClock(kCLOCK_PortE);
 
     /* PORTB18 (pin 64) is configured as FTM2_CH0 */
     PORT_SetPinMux(PORTB, 18U, kPORT_MuxAlt3);
-
-    /* PORTB2 (pin 55) is configured as I2C0_SCL */
-    PORT_SetPinMux(BOARD_ADC0_SE12_PORT, BOARD_ADC0_SE12_PIN, kPORT_MuxAlt2);
-
-    /* PORTB3 (pin 56) is configured as I2C0_SDA */
-    PORT_SetPinMux(PORTB, 3U, kPORT_MuxAlt2);
 
     /* PORTC1 (pin 71) is configured as FTM0_CH0 */
     PORT_SetPinMux(PORTC, 1U, kPORT_MuxAlt4);
@@ -213,6 +209,12 @@ void BOARD_InitPins(void)
 
     /* PORTD3 (pin 96) is configured as PTD3 */
     PORT_SetPinMux(BOARD_UART2_TX_PORT, BOARD_UART2_TX_PIN, kPORT_MuxAsGpio);
+
+    /* PORTE24 (pin 31) is configured as I2C0_SCL */
+    PORT_SetPinMux(PORTE, 24U, kPORT_MuxAlt5);
+
+    /* PORTE25 (pin 32) is configured as I2C0_SDA */
+    PORT_SetPinMux(PORTE, 25U, kPORT_MuxAlt5);
 
     SIM->SOPT4 = ((SIM->SOPT4 &
                    /* Mask bits to zero which are setting */

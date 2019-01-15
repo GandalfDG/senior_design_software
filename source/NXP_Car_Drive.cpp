@@ -88,7 +88,7 @@ int main(void) {
  */
 static void hello_task(void *pvParameters) {
 	interface.begin(16, 2);
-	interface.setBacklight(0x7);
+	interface.clear();
 	for (;;) {
 		PRINTF("Hello world.\r\n");
 		vTaskDelay(pdMS_TO_TICKS(1000));

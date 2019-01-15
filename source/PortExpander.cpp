@@ -21,8 +21,8 @@ void PortExpander::begin(uint8_t addr) {
 	i2caddr = addr;
 
 	// set defaults
-	writeSingleByte(MCP23017_IODIRA, 0xBE);
-	writeSingleByte(MCP23017_IODIRB, 0xBE);
+	writeSingleByte(MCP23017_IODIRA, 0xFF);
+	writeSingleByte(MCP23017_IODIRB, 0xFF);
 
 	uint8_t test = readSingleByte(MCP23017_IODIRA);
 }

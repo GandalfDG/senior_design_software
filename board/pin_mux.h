@@ -30,12 +30,6 @@ void BOARD_InitBootPins(void);
 #define SOPT7_ADC0PRETRGSEL_A 0x00u  /*!<@brief ADC0 pretrigger select: Pre-trigger A */
 #define SOPT7_ADC0TRGSEL_FTM1 0x09u  /*!<@brief ADC0 trigger select: FTM1 trigger */
 
-/*! @name PORTB2 (number 55), J4[2]
-  @{ */
-#define BOARD_ADC0_SE12_PORT PORTB /*!<@brief PORT device name: PORTB */
-#define BOARD_ADC0_SE12_PIN 2U     /*!<@brief PORTB pin index: 2 */
-                                   /* @} */
-
 /*! @name PORTD3 (number 96), J2[10]
   @{ */
 #define BOARD_UART2_TX_GPIO GPIOD /*!<@brief GPIO device name: GPIOD */
