@@ -71,7 +71,6 @@ instance:
       - enable_priority: 'false'
       - enable_custom_name: 'false'
     - EnableTimerInInit: 'true'
-    - quick_selection: 'QuickSelectionDefault'
   - ftm_edge_aligned_mode:
     - ftm_edge_aligned_channels_config:
       - 0:

@@ -53,6 +53,10 @@
 /* TODO: insert other definitions and declarations here. */
 #define hello_task_PRIORITY (configMAX_PRIORITIES - 1)
 static void hello_task(void*);
+static void motor_test_task(void*);
+
+Motor motor_l { kFTM_Chnl_0, kFTM_Chnl_1 };
+Motor motor_r { kFTM_Chnl_2, kFTM_Chnl_3 };
 
 User_Interface interface;
 
@@ -72,12 +76,21 @@ int main(void) {
 
 	expander.begin();
 
-	if (xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE + 20,
-	NULL, hello_task_PRIORITY, NULL) != pdPASS) {
+//	if (xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE + 20,
+//	NULL, hello_task_PRIORITY, NULL) != pdPASS) {
+//		PRINTF("Task creation failed!.\r\n");
+//		while (1)
+//			;
+//	}
+
+	if (xTaskCreate(motor_test_task, "Motor_test",
+			configMINIMAL_STACK_SIZE + 20,
+			NULL, hello_task_PRIORITY, NULL) != pdPASS) {
 		PRINTF("Task creation failed!.\r\n");
 		while (1)
 			;
 	}
+
 	vTaskStartScheduler();
 	for (;;)
 		;
@@ -93,5 +106,45 @@ static void hello_task(void *pvParameters) {
 		PRINTF("Hello world.\r\n");
 		vTaskDelay(pdMS_TO_TICKS(1000));
 	}
+}
+
+static void motor_test_task(void* pvParameters) {
+	for (;;) {
+		motor_l.set_direction(Motor::FORWARD);
+		motor_r.set_direction(Motor::FORWARD);
+
+		// drive motors from 0 to full forward
+		for (int i = 0; i <= 100; i++) {
+			motor_l.set_speed(i);
+			motor_r.set_speed(i);
+			vTaskDelay(pdMS_TO_TICKS(100));
+		}
+
+		// from full forward to 0
+		for (int i = 100; i >= 0; i--) {
+			motor_l.set_speed(i);
+			motor_r.set_speed(i);
+			vTaskDelay(pdMS_TO_TICKS(100));
+		}
+
+		motor_l.set_direction(Motor::REVERSE);
+		motor_r.set_direction(Motor::REVERSE);
+
+		// drive motors from 0 to full reverse
+		for (int i = 0; i <= 100; i++) {
+			motor_l.set_speed(i);
+			motor_r.set_speed(i);
+			vTaskDelay(pdMS_TO_TICKS(100));
+		}
+
+		// from full reverse to 0
+		for (int i = 100; i >= 0; i--) {
+			motor_l.set_speed(i);
+			motor_r.set_speed(i);
+			vTaskDelay(pdMS_TO_TICKS(100));
+		}
+		vTaskSuspend(NULL);
+	}
+
 }
 
