@@ -18,8 +18,8 @@ public:
 		REVERSE
 	};
 
-	static FTM_Type* pwm_ftm_base;
-	static FTM_Type* encoder_ftm_base;
+	FTM_Type* pwm_ftm_base;
+	FTM_Type* encoder_ftm_base;
 
 	Motor(ftm_chnl_t fwd, ftm_chnl_t rev);
 
