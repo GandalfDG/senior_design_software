@@ -102,6 +102,10 @@ extern "C" {
 #define CAMERA_TIMER_IRQN FTM1_IRQn
 /* Camera_Timer interrupt handler identifier. */
 #define CAMERA_TIMER_IRQHANDLER FTM1_IRQHandler
+/* Definition of peripheral ID */
+#define BLUETOOTH_UART_PERIPHERAL UART3
+/* Definition of the clock source frequency */
+#define BLUETOOTH_UART_CLOCK_SOURCE CLOCK_GetFreq(UART3_CLK_SRC)
 
 /***********************************************************************************************************************
  * Global variables
@@ -117,6 +121,7 @@ extern const adc16_channel_mux_mode_t Camera_ADC_muxMode;
 extern const adc16_hardware_average_mode_t Camera_ADC_hardwareAverageMode;
 extern const ftm_config_t Encoder_Timer_config;
 extern const ftm_config_t Camera_Timer_config;
+extern const uart_config_t Bluetooth_UART_config;
 
 /***********************************************************************************************************************
  * Initialization functions

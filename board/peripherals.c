@@ -679,6 +679,48 @@ void Camera_Timer_init(void) {
 }
 
 /***********************************************************************************************************************
+ * Bluetooth_UART initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'Bluetooth_UART'
+- type: 'uart'
+- mode: 'polling'
+- type_id: 'uart_cd31a12aa8c79051fda42cc851a27c37'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'UART3'
+- config_sets:
+  - uartConfig_t:
+    - uartConfig:
+      - clockSource: 'BusInterfaceClock'
+      - clockSourceFreq: 'GetFreq'
+      - baudRate_Bps: '9600'
+      - parityMode: 'kUART_ParityDisabled'
+      - stopBitCount: 'kUART_OneStopBit'
+      - txFifoWatermark: '0'
+      - rxFifoWatermark: '1'
+      - idleType: 'kUART_IdleTypeStartBit'
+      - enableTx: 'true'
+      - enableRx: 'true'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+const uart_config_t Bluetooth_UART_config = {
+  .baudRate_Bps = 9600,
+  .parityMode = kUART_ParityDisabled,
+  .stopBitCount = kUART_OneStopBit,
+  .txFifoWatermark = 0,
+  .rxFifoWatermark = 1,
+  .idleType = kUART_IdleTypeStartBit,
+  .enableTx = true,
+  .enableRx = true
+};
+
+void Bluetooth_UART_init(void) {
+  UART_Init(BLUETOOTH_UART_PERIPHERAL, &Bluetooth_UART_config, BLUETOOTH_UART_CLOCK_SOURCE);
+}
+
+/***********************************************************************************************************************
  * Initialization functions
  **********************************************************************************************************************/
 void BOARD_InitPeripherals(void)
@@ -695,6 +737,7 @@ void BOARD_InitPeripherals(void)
   GPIO_D_init();
   Encoder_Timer_init();
   Camera_Timer_init();
+  Bluetooth_UART_init();
 }
 
 /***********************************************************************************************************************

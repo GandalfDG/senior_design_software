@@ -156,6 +156,10 @@ BOARD_InitPins:
   - {peripheral: ADC0, signal: 'TRG, A', pin_signal: Flex_timer_1}
   - {pin_num: '31', peripheral: I2C0, signal: SCL, pin_signal: ADC0_SE17/PTE24/UART4_TX/I2C0_SCL/EWM_OUT_b, identifier: ''}
   - {pin_num: '32', peripheral: I2C0, signal: SDA, pin_signal: ADC0_SE18/PTE25/UART4_RX/I2C0_SDA/EWM_IN, identifier: ''}
+  - {pin_num: '58', peripheral: UART3, signal: RX, pin_signal: ADC1_SE14/PTB10/SPI1_PCS0/UART3_RX/FB_AD19/FTM0_FLT1}
+  - {pin_num: '59', peripheral: UART3, signal: TX, pin_signal: ADC1_SE15/PTB11/SPI1_SCK/UART3_TX/FB_AD18/FTM0_FLT2}
+  - {pin_num: '66', peripheral: GPIOB, signal: 'GPIO, 20', pin_signal: PTB20/SPI2_PCS0/FB_AD31/CMP0_OUT}
+  - {pin_num: '56', peripheral: GPIOB, signal: 'GPIO, 3', pin_signal: ADC0_SE13/PTB3/I2C0_SDA/UART0_CTS_b/UART0_COL_b/ENET0_1588_TMR1/FTM0_FLT0}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -177,8 +181,20 @@ void BOARD_InitPins(void)
     /* Port E Clock Gate Control: Clock enabled */
     CLOCK_EnableClock(kCLOCK_PortE);
 
+    /* PORTB10 (pin 58) is configured as UART3_RX */
+    PORT_SetPinMux(PORTB, 10U, kPORT_MuxAlt3);
+
+    /* PORTB11 (pin 59) is configured as UART3_TX */
+    PORT_SetPinMux(PORTB, 11U, kPORT_MuxAlt3);
+
     /* PORTB18 (pin 64) is configured as FTM2_CH0 */
     PORT_SetPinMux(PORTB, 18U, kPORT_MuxAlt3);
+
+    /* PORTB20 (pin 66) is configured as PTB20 */
+    PORT_SetPinMux(BOARD_RF_WIFI_CE_PORT, BOARD_RF_WIFI_CE_PIN, kPORT_MuxAsGpio);
+
+    /* PORTB3 (pin 56) is configured as PTB3 */
+    PORT_SetPinMux(PORTB, 3U, kPORT_MuxAsGpio);
 
     /* PORTC1 (pin 71) is configured as FTM0_CH0 */
     PORT_SetPinMux(PORTC, 1U, kPORT_MuxAlt4);

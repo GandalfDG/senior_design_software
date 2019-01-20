@@ -37,6 +37,13 @@ void BOARD_InitBootPins(void);
 #define BOARD_UART2_TX_PIN 3U     /*!<@brief PORTD pin index: 3 */
                                   /* @} */
 
+/*! @name PORTB20 (number 66), J6[3]/J4[9]/RF_WIFI_CE
+  @{ */
+#define BOARD_RF_WIFI_CE_GPIO GPIOB /*!<@brief GPIO device name: GPIOB */
+#define BOARD_RF_WIFI_CE_PORT PORTB /*!<@brief PORT device name: PORTB */
+#define BOARD_RF_WIFI_CE_PIN 20U    /*!<@brief PORTB pin index: 20 */
+                                    /* @} */
+
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
  *
