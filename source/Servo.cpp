@@ -8,11 +8,24 @@
 #include <Servo.h>
 
 Servo::Servo() {
-	// TODO Auto-generated constructor stub
-
+	Servo(kFTM_Chnl_0, 400, 2000);
 }
 
-Servo::~Servo() {
-	// TODO Auto-generated destructor stub
+Servo::Servo(ftm_chnl_t servo_channel, uint16_t left_width,
+		uint16_t right_width) {
+	servo_channel = servo_channel;
+	left_pulse_width = left_width;
+	right_pulse_width = right_width;
+	center_pulse_width = (left_pulse_width + right_pulse_width) / 2;
+	set_position(center_pulse_width);
 }
 
+void Servo::set_position(uint16_t pos) {
+	uint16_t cnv, mod;
+	mod = pwm_ftm_base->MOD;
+
+	cnv = mod * (pos / SERVO_PWM_PERIOD);
+	pwm_ftm_base->CONTROLS[servo_channel].CnV = cnv;
+
+	FTM_SetSoftwareTrigger(pwm_ftm_base, true);
+}

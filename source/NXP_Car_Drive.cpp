@@ -46,6 +46,7 @@
 #include "timers.h"
 
 #include "Motor.h"
+#include "Servo.h"
 #include "PortExpander.h"
 #include "UserInterface.h"
 /* TODO: insert other include files here. */
@@ -57,6 +58,8 @@ static void motor_test_task(void*);
 
 Motor motor_l { kFTM_Chnl_0, kFTM_Chnl_1 };
 Motor motor_r { kFTM_Chnl_2, kFTM_Chnl_3 };
+
+Servo servo;
 
 User_Interface interface;
 
@@ -83,9 +86,11 @@ int main(void) {
 //			;
 //	}
 
-	if (xTaskCreate(motor_test_task, "Motor_test",
-			configMINIMAL_STACK_SIZE + 20,
-			NULL, hello_task_PRIORITY, NULL) != pdPASS) {
+	if (xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
+	NULL, hello_task_PRIORITY, NULL) != pdPASS
+			|| xTaskCreate(hello_task, "Hello_task",
+					configMINIMAL_STACK_SIZE + 20,
+					NULL, hello_task_PRIORITY, NULL) != pdPASS) {
 		PRINTF("Task creation failed!.\r\n");
 		while (1)
 			;
