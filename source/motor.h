@@ -11,6 +11,9 @@
 #include "MK64F12.h"
 #include "peripherals.h"
 
+#include "FreeRTOS.h"
+#include "task.h"
+
 class Motor {
 public:
 	enum direction {
@@ -28,6 +31,7 @@ public:
 	void stop(void);
 	direction getRotationDirection() const;
 	uint8_t getRotationSpeed() const;
+	void motor_test(void);
 
 private:
 	// the channels corresponding to driving the motor forward or in reverse

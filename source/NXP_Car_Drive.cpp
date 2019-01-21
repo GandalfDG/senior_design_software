@@ -87,10 +87,9 @@ int main(void) {
 //	}
 
 	if (xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
-	NULL, hello_task_PRIORITY, NULL) != pdPASS
-			|| xTaskCreate(hello_task, "Hello_task",
-					configMINIMAL_STACK_SIZE + 20,
-					NULL, hello_task_PRIORITY, NULL) != pdPASS) {
+			(void*) &motor_l, hello_task_PRIORITY, NULL) != pdPASS
+			|| xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
+					(void*) &motor_r, hello_task_PRIORITY, NULL) != pdPASS) {
 		PRINTF("Task creation failed!.\r\n");
 		while (1)
 			;
@@ -113,43 +112,10 @@ static void hello_task(void *pvParameters) {
 	}
 }
 
-static void motor_test_task(void* pvParameters) {
+static void motor_test_task(void *pvParameters) {
+	Motor* motor_p = (Motor*) pvParameters;
 	for (;;) {
-		motor_l.set_direction(Motor::FORWARD);
-		motor_r.set_direction(Motor::FORWARD);
-
-		// drive motors from 0 to full forward
-		for (int i = 0; i <= 100; i++) {
-			motor_l.set_speed(i);
-			motor_r.set_speed(i);
-			vTaskDelay(pdMS_TO_TICKS(100));
-		}
-
-		// from full forward to 0
-		for (int i = 100; i >= 0; i--) {
-			motor_l.set_speed(i);
-			motor_r.set_speed(i);
-			vTaskDelay(pdMS_TO_TICKS(100));
-		}
-
-		motor_l.set_direction(Motor::REVERSE);
-		motor_r.set_direction(Motor::REVERSE);
-
-		// drive motors from 0 to full reverse
-		for (int i = 0; i <= 100; i++) {
-			motor_l.set_speed(i);
-			motor_r.set_speed(i);
-			vTaskDelay(pdMS_TO_TICKS(100));
-		}
-
-		// from full reverse to 0
-		for (int i = 100; i >= 0; i--) {
-			motor_l.set_speed(i);
-			motor_r.set_speed(i);
-			vTaskDelay(pdMS_TO_TICKS(100));
-		}
-		vTaskSuspend(NULL);
+		motor_p->motor_test();
 	}
-
 }
 

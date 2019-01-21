@@ -57,3 +57,36 @@ void Motor::stop(void) {
 			(ftm_pwm_mode_t) Motor_PWM_config.pwmSyncMode, 0);
 	rotation_speed = 0;
 }
+
+void Motor::motor_test(void) {
+	set_direction(FORWARD);
+
+	// drive motors from 0 to full forward
+	for (int i = 0; i <= 100; i++) {
+		set_speed(i);
+		vTaskDelay(pdMS_TO_TICKS(100));
+	}
+
+	// from full forward to 0
+	for (int i = 100; i >= 0; i--) {
+		set_speed(i);
+		vTaskDelay(pdMS_TO_TICKS(100));
+	}
+
+	set_direction(REVERSE);
+
+	// drive motors from 0 to full reverse
+	for (int i = 0; i <= 100; i++) {
+		set_speed(i);
+		vTaskDelay(pdMS_TO_TICKS(100));
+	}
+
+	// from full reverse to 0
+	for (int i = 100; i >= 0; i--) {
+		set_speed(i);
+		vTaskDelay(pdMS_TO_TICKS(100));
+	}
+	vTaskSuspend(NULL);
+
+}
+
