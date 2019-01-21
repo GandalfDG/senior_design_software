@@ -17,7 +17,7 @@ Servo::Servo(ftm_chnl_t servo_channel, uint16_t left_width,
 	left_pulse_width = left_width;
 	right_pulse_width = right_width;
 	center_pulse_width = (left_pulse_width + right_pulse_width) / 2;
-	set_position(center_pulse_width);
+	current_pulse_width = center_pulse_width;
 }
 
 void Servo::set_position(uint16_t pos) {
