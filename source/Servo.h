@@ -11,7 +11,12 @@
 #include "MK64f12.h"
 #include "peripherals.h"
 
+#include "FreeRTOS.h"
+#include "task.h"
+
 #define SERVO_PWM_PERIOD (20000) // microseconds
+#define SERVO_TEST_PERIOD (100)  // milliseconds
+#define SERVO_TEST_STEP (10)
 
 class Servo {
 public:
@@ -23,6 +28,7 @@ public:
 	Servo(ftm_chnl_t servo_channel, uint16_t left_width, uint16_t right_width);
 
 	void set_position(uint16_t pos);
+	void servo_test(void);
 
 private:
 	ftm_chnl_t servo_channel;
