@@ -164,7 +164,7 @@ instance:
     - ftm_config:
       - clockSource: 'kFTM_SystemClock'
       - clockSourceFreq: 'GetFreq'
-      - prescale: 'kFTM_Prescale_Divide_1'
+      - prescale: 'kFTM_Prescale_Divide_32'
       - timerFrequency: '50'
       - bdmMode: 'kFTM_BdmMode_0'
       - pwmSyncMode: 'kFTM_SoftwareTrigger'
@@ -196,7 +196,7 @@ instance:
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
 const ftm_config_t Servo_PWM_config = {
-  .prescale = kFTM_Prescale_Divide_1,
+  .prescale = kFTM_Prescale_Divide_32,
   .bdmMode = kFTM_BdmMode_0,
   .pwmSyncMode = kFTM_SoftwareTrigger,
   .reloadPoints = 0,

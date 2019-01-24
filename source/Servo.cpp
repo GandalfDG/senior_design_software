@@ -24,7 +24,7 @@ void Servo::set_position(uint16_t pos) {
 	uint16_t cnv, mod;
 	mod = pwm_ftm_base->MOD;
 
-	cnv = mod * (pos / SERVO_PWM_PERIOD);
+	cnv = (mod * pos) / SERVO_PWM_PERIOD;
 	pwm_ftm_base->CONTROLS[servo_channel].CnV = cnv;
 
 	FTM_SetSoftwareTrigger(pwm_ftm_base, true);
@@ -36,29 +36,28 @@ void Servo::servo_test(void) {
 	// start at center
 	set_position(center_pulse_width);
 
-	for (;;) {
-		// move to full left
-		for (int i = center_pulse_width; i >= left_pulse_width; i -=
-				SERVO_TEST_STEP) {
-			set_position(i);
-			vTaskDelay(pdMS_TO_TICKS(SERVO_TEST_PERIOD));
-		}
-
-		// move to full right
-
-		for (int i = left_pulse_width; i <= right_pulse_width; i +=
-		SERVO_TEST_STEP) {
-			set_position(i);
-			vTaskDelay(pdMS_TO_TICKS(SERVO_TEST_PERIOD));
-		}
-
-		// move back to center
-		for (int i = right_pulse_width; i >= center_pulse_width; i -=
-		SERVO_TEST_STEP) {
-			set_position(i);
-			vTaskDelay(pdMS_TO_TICKS(SERVO_TEST_PERIOD));
-		}
-
-		vTaskSuspend(NULL);
+	// move to full left
+	for (int i = center_pulse_width; i >= left_pulse_width; i -=
+	SERVO_TEST_STEP) {
+		set_position(i);
+		vTaskDelay(pdMS_TO_TICKS(SERVO_TEST_PERIOD));
 	}
+
+	// move to full right
+
+	for (int i = left_pulse_width; i <= right_pulse_width; i +=
+	SERVO_TEST_STEP) {
+		set_position(i);
+		vTaskDelay(pdMS_TO_TICKS(SERVO_TEST_PERIOD));
+	}
+
+	// move back to center
+	for (int i = right_pulse_width; i >= center_pulse_width; i -=
+	SERVO_TEST_STEP) {
+		set_position(i);
+		vTaskDelay(pdMS_TO_TICKS(SERVO_TEST_PERIOD));
+	}
+
+	vTaskSuspend(NULL);
+
 }

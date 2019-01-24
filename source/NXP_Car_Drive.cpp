@@ -55,11 +55,12 @@
 #define hello_task_PRIORITY (configMAX_PRIORITIES - 1)
 static void hello_task(void*);
 static void motor_test_task(void*);
+static void servo_test_task(void *pvParameters);
 
 Motor motor_l { kFTM_Chnl_0, kFTM_Chnl_1 };
 Motor motor_r { kFTM_Chnl_2, kFTM_Chnl_3 };
 
-Servo servo;
+Servo servo {kFTM_Chnl_0, 400, 2000};
 
 User_Interface interface;
 
@@ -86,6 +87,7 @@ int main(void) {
 //			;
 //	}
 
+	xTaskCreate(servo_test_task, "Servo_test", configMINIMAL_STACK_SIZE, &servo, hello_task_PRIORITY, NULL);
 	if (xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
 			(void*) &motor_l, hello_task_PRIORITY, NULL) != pdPASS
 			|| xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
@@ -116,6 +118,13 @@ static void motor_test_task(void *pvParameters) {
 	Motor* motor_p = (Motor*) pvParameters;
 	for (;;) {
 		motor_p->motor_test();
+	}
+}
+
+static void servo_test_task(void *pvParameters) {
+	Servo* servo_p = (Servo*) pvParameters;
+	for (;;) {
+		servo_p->servo_test();
 	}
 }
 
