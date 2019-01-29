@@ -64,13 +64,13 @@ void Motor::motor_test(void) {
 	// drive motors from 0 to full forward
 	for (int i = 0; i <= 100; i++) {
 		set_speed(i);
-		vTaskDelay(pdMS_TO_TICKS(100));
+		vTaskDelay(pdMS_TO_TICKS(MOTOR_TEST_PERIOD));
 	}
 
 	// from full forward to 0
 	for (int i = 100; i >= 0; i--) {
 		set_speed(i);
-		vTaskDelay(pdMS_TO_TICKS(100));
+		vTaskDelay(pdMS_TO_TICKS(MOTOR_TEST_PERIOD));
 	}
 
 	set_direction(REVERSE);
@@ -78,13 +78,13 @@ void Motor::motor_test(void) {
 	// drive motors from 0 to full reverse
 	for (int i = 0; i <= 100; i++) {
 		set_speed(i);
-		vTaskDelay(pdMS_TO_TICKS(100));
+		vTaskDelay(pdMS_TO_TICKS(MOTOR_TEST_PERIOD));
 	}
 
 	// from full reverse to 0
 	for (int i = 100; i >= 0; i--) {
 		set_speed(i);
-		vTaskDelay(pdMS_TO_TICKS(100));
+		vTaskDelay(pdMS_TO_TICKS(MOTOR_TEST_PERIOD));
 	}
 	vTaskSuspend(NULL);
 

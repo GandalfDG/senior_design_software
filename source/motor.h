@@ -14,6 +14,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#define MOTOR_TEST_PERIOD (100) //milliseconds
+
 class Motor {
 public:
 	enum direction {
