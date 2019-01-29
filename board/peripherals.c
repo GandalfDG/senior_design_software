@@ -77,28 +77,28 @@ instance:
         - edge_aligned_mode: 'kFTM_EdgeAlignedPwm'
         - edge_aligned_pwm:
           - chnlNumber: 'kFTM_Chnl_0'
-          - level: 'kFTM_NoPwmSignal'
+          - level: 'kFTM_HighTrue'
           - dutyCyclePercent: '0'
           - enable_chan_irq: 'false'
       - 1:
         - edge_aligned_mode: 'kFTM_EdgeAlignedPwm'
         - edge_aligned_pwm:
           - chnlNumber: 'kFTM_Chnl_1'
-          - level: 'kFTM_NoPwmSignal'
+          - level: 'kFTM_HighTrue'
           - dutyCyclePercent: '0'
           - enable_chan_irq: 'false'
       - 2:
         - edge_aligned_mode: 'kFTM_EdgeAlignedPwm'
         - edge_aligned_pwm:
           - chnlNumber: 'kFTM_Chnl_2'
-          - level: 'kFTM_NoPwmSignal'
+          - level: 'kFTM_HighTrue'
           - dutyCyclePercent: '0'
           - enable_chan_irq: 'false'
       - 3:
         - edge_aligned_mode: 'kFTM_EdgeAlignedPwm'
         - edge_aligned_pwm:
           - chnlNumber: 'kFTM_Chnl_3'
-          - level: 'kFTM_NoPwmSignal'
+          - level: 'kFTM_HighTrue'
           - dutyCyclePercent: '0'
           - enable_chan_irq: 'false'
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
@@ -121,22 +121,22 @@ const ftm_config_t Motor_PWM_config = {
 const ftm_chnl_pwm_signal_param_t Motor_PWM_pwmSignalParams[] = { 
   {
     .chnlNumber = kFTM_Chnl_0,
-    .level = kFTM_NoPwmSignal,
+    .level = kFTM_HighTrue,
     .dutyCyclePercent = 0
   },
   {
     .chnlNumber = kFTM_Chnl_1,
-    .level = kFTM_NoPwmSignal,
+    .level = kFTM_HighTrue,
     .dutyCyclePercent = 0
   },
   {
     .chnlNumber = kFTM_Chnl_2,
-    .level = kFTM_NoPwmSignal,
+    .level = kFTM_HighTrue,
     .dutyCyclePercent = 0
   },
   {
     .chnlNumber = kFTM_Chnl_3,
-    .level = kFTM_NoPwmSignal,
+    .level = kFTM_HighTrue,
     .dutyCyclePercent = 0
   }
 };
@@ -190,7 +190,7 @@ instance:
         - edge_aligned_mode: 'kFTM_EdgeAlignedPwm'
         - edge_aligned_pwm:
           - chnlNumber: 'kFTM_Chnl_0'
-          - level: 'kFTM_NoPwmSignal'
+          - level: 'kFTM_HighTrue'
           - dutyCyclePercent: '0'
           - enable_chan_irq: 'false'
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
@@ -213,7 +213,7 @@ const ftm_config_t Servo_PWM_config = {
 const ftm_chnl_pwm_signal_param_t Servo_PWM_pwmSignalParams[] = { 
   {
     .chnlNumber = kFTM_Chnl_0,
-    .level = kFTM_NoPwmSignal,
+    .level = kFTM_HighTrue,
     .dutyCyclePercent = 0
   }
 };
