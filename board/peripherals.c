@@ -565,28 +565,28 @@ instance:
           - chnNumber: 'kFTM_Chnl_4'
           - input_capture_edge: 'kFTM_RisingEdge'
           - filterValue: '0'
-          - enable_chan_irq: 'false'
+          - enable_chan_irq: 'true'
       - 1:
         - edge_aligned_mode: 'kFTM_InputCapture'
         - input_capture:
           - chnNumber: 'kFTM_Chnl_5'
           - input_capture_edge: 'kFTM_RisingEdge'
           - filterValue: '0'
-          - enable_chan_irq: 'false'
+          - enable_chan_irq: 'true'
       - 2:
         - edge_aligned_mode: 'kFTM_InputCapture'
         - input_capture:
           - chnNumber: 'kFTM_Chnl_6'
           - input_capture_edge: 'kFTM_RisingEdge'
           - filterValue: '0'
-          - enable_chan_irq: 'false'
+          - enable_chan_irq: 'true'
       - 3:
         - edge_aligned_mode: 'kFTM_InputCapture'
         - input_capture:
           - chnNumber: 'kFTM_Chnl_7'
           - input_capture_edge: 'kFTM_RisingEdge'
           - filterValue: '0'
-          - enable_chan_irq: 'false'
+          - enable_chan_irq: 'true'
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
 const ftm_config_t Encoder_Timer_config = {
@@ -611,6 +611,7 @@ void Encoder_Timer_init(void) {
   FTM_SetupInputCapture(ENCODER_TIMER_PERIPHERAL, kFTM_Chnl_6, kFTM_RisingEdge, 0);
   FTM_SetupInputCapture(ENCODER_TIMER_PERIPHERAL, kFTM_Chnl_7, kFTM_RisingEdge, 0);
   FTM_SetTimerPeriod(ENCODER_TIMER_PERIPHERAL, ((ENCODER_TIMER_CLOCK_SOURCE/ (1U << (ENCODER_TIMER_PERIPHERAL->SC & FTM_SC_PS_MASK))) / 10000) + 1);
+  FTM_EnableInterrupts(ENCODER_TIMER_PERIPHERAL, kFTM_Chnl4InterruptEnable | kFTM_Chnl5InterruptEnable | kFTM_Chnl6InterruptEnable | kFTM_Chnl7InterruptEnable);
   FTM_StartTimer(ENCODER_TIMER_PERIPHERAL, kFTM_SystemClock);
 }
 
