@@ -6,9 +6,18 @@
  */
 #include <Motor.h>
 
-Motor::Motor(ftm_chnl_t fwd, ftm_chnl_t rev) {
+Motor::Motor(ftm_chnl_t fwd, ftm_chnl_t rev,  ftm_chnl_t enc_a, ftm_chnl_t enc_b) {
 	forward_channel = fwd;
 	reverse_channel = rev;
+	encoder_a_channel = enc_a;
+	encoder_b_channel = enc_b;
+
+	encoder_a_prev = 0;
+	encoder_b_prev = 0;
+	encoder_a_curr = 0;
+	encoder_b_curr = 0;
+
+	physical_speed = 0;
 
 	pwm_ftm_base = MOTOR_PWM_PERIPHERAL;
 	encoder_ftm_base = ENCODER_TIMER_PERIPHERAL;
@@ -56,6 +65,20 @@ void Motor::stop(void) {
 	FTM_UpdatePwmDutycycle(pwm_ftm_base, reverse_channel,
 			(ftm_pwm_mode_t) Motor_PWM_config.pwmSyncMode, 0);
 	rotation_speed = 0;
+}
+
+void ENCODER_TIMER_IRQHANDLER() {
+}
+
+uint16_t Motor::getPhysicalSpeed() {
+	return physical_speed;
+}
+
+//this can be called from the motor drive task if a semaphore has been given from the isr
+void Motor::update_physical_speed() {
+	physical_speed = encoder_a_curr - encoder_a_prev;
+	//could also check physical rotation direction by comparing most recent
+	//time from a and b, but not super important
 }
 
 void Motor::motor_test(void) {
