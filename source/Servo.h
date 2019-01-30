@@ -15,8 +15,8 @@
 #include "task.h"
 
 #define SERVO_PWM_PERIOD (20000) // microseconds
-#define SERVO_TEST_PERIOD (30)  // milliseconds
-#define SERVO_TEST_STEP (10)
+#define SERVO_TEST_PERIOD (100)  // milliseconds
+#define SERVO_TEST_STEP (50)
 
 class Servo {
 public:
