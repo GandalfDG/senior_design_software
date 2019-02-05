@@ -49,6 +49,8 @@
 #include "Servo.h"
 #include "PortExpander.h"
 #include "UserInterface.h"
+
+#include "car_components.h"
 /* TODO: insert other include files here. */
 
 /* TODO: insert other definitions and declarations here. */
@@ -57,10 +59,7 @@ static void hello_task(void*);
 static void motor_test_task(void*);
 static void servo_test_task(void *pvParameters);
 
-Motor motor_l { kFTM_Chnl_0, kFTM_Chnl_1, kFTM_Chnl_4, kFTM_Chnl_5 };
-Motor motor_r { kFTM_Chnl_2, kFTM_Chnl_3, kFTM_Chnl_6, kFTM_Chnl_7 };
 
-Servo servo {kFTM_Chnl_0, 400, 2000};
 
 User_Interface interface;
 

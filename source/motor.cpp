@@ -67,9 +67,6 @@ void Motor::stop(void) {
 	rotation_speed = 0;
 }
 
-void ENCODER_TIMER_IRQHANDLER() {
-}
-
 uint16_t Motor::getPhysicalSpeed() {
 	return physical_speed;
 }
