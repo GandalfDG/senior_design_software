@@ -1413,7 +1413,7 @@
                                  <setting name="chnNumber" value="kFTM_Chnl_5"/>
                                  <setting name="input_capture_edge" value="kFTM_RisingEdge"/>
                                  <setting name="filterValue" value="0"/>
-                                 <setting name="enable_chan_irq" value="true"/>
+                                 <setting name="enable_chan_irq" value="false"/>
                               </struct>
                            </struct>
                            <struct name="2">
@@ -1431,7 +1431,7 @@
                                  <setting name="chnNumber" value="kFTM_Chnl_7"/>
                                  <setting name="input_capture_edge" value="kFTM_RisingEdge"/>
                                  <setting name="filterValue" value="0"/>
-                                 <setting name="enable_chan_irq" value="true"/>
+                                 <setting name="enable_chan_irq" value="false"/>
                               </struct>
                            </struct>
                         </array>
