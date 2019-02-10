@@ -550,13 +550,12 @@ instance:
       - chnlPolarity: ''
       - useGlobalTimeBase: 'false'
     - timer_interrupts: ''
-    - enable_irq: 'false'
+    - enable_irq: 'true'
     - ftm_interrupt:
       - IRQn: 'FTM3_IRQn'
       - enable_priority: 'false'
       - enable_custom_name: 'false'
     - EnableTimerInInit: 'true'
-    - quick_selection: 'QuickSelectionDefault'
   - ftm_edge_aligned_mode:
     - ftm_edge_aligned_channels_config:
       - 0:
@@ -612,6 +611,8 @@ void Encoder_Timer_init(void) {
   FTM_SetupInputCapture(ENCODER_TIMER_PERIPHERAL, kFTM_Chnl_7, kFTM_RisingEdge, 0);
   FTM_SetTimerPeriod(ENCODER_TIMER_PERIPHERAL, ((ENCODER_TIMER_CLOCK_SOURCE/ (1U << (ENCODER_TIMER_PERIPHERAL->SC & FTM_SC_PS_MASK))) / 10000) + 1);
   FTM_EnableInterrupts(ENCODER_TIMER_PERIPHERAL, kFTM_Chnl4InterruptEnable | kFTM_Chnl6InterruptEnable);
+  /* Enable interrupt FTM3_IRQn request in the NVIC */
+  EnableIRQ(ENCODER_TIMER_IRQN);
   FTM_StartTimer(ENCODER_TIMER_PERIPHERAL, kFTM_SystemClock);
 }
 

@@ -51,6 +51,7 @@
 #include "UserInterface.h"
 
 #include "car_components.h"
+#include "interrupt_handlers.h"
 /* TODO: insert other include files here. */
 
 /* TODO: insert other definitions and declarations here. */
@@ -86,17 +87,17 @@ int main(void) {
 //			;
 //	}
 
-	xTaskCreate(servo_test_task, "Servo_test", configMINIMAL_STACK_SIZE, &servo, hello_task_PRIORITY, NULL);
-	if (xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
-			(void*) &motor_l, hello_task_PRIORITY, NULL) != pdPASS
-			|| xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
-					(void*) &motor_r, hello_task_PRIORITY, NULL) != pdPASS) {
-		PRINTF("Task creation failed!.\r\n");
-		while (1)
-			;
-	}
-
-	vTaskStartScheduler();
+//	xTaskCreate(servo_test_task, "Servo_test", configMINIMAL_STACK_SIZE, &servo, hello_task_PRIORITY, NULL);
+//	if (xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
+//			(void*) &motor_l, hello_task_PRIORITY, NULL) != pdPASS
+//			|| xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
+//					(void*) &motor_r, hello_task_PRIORITY, NULL) != pdPASS) {
+//		PRINTF("Task creation failed!.\r\n");
+//		while (1)
+//			;
+//	}
+//
+//	vTaskStartScheduler();
 	for (;;)
 		;
 }

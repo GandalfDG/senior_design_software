@@ -5,11 +5,10 @@
  *      Author: Jack
  */
 
-#include "peripherals.h"
-#include "Motor.h"
-#include "car_components.h"
+#include "interrupt_handlers.h"
 
-void ENCODER_TIMER_IRQHANDLER(void) {
+void FTM3_IRQHandler(void) {
+	//TODO handle the timer overflow case, speed might temporarily be wrong if the timer overflows
 	uint32_t capture_val_l = 0;
 	uint32_t capture_val_r = 0;
 	// read counter value from triggered channel(s)
@@ -22,18 +21,18 @@ void ENCODER_TIMER_IRQHANDLER(void) {
 		capture_val_l =
 				motor_l.encoder_ftm_base->CONTROLS[motor_l.encoder_a_channel].CnV;
 		FTM_ClearStatusFlags(motor_l.encoder_ftm_base,
-				motor_l.encoder_a_channel);
+				1u << motor_l.encoder_a_channel);
+		motor_l.update_physical_speed(capture_val_l);
 	}
 
 	if (encoder_r_flags) {
 		capture_val_r =
 				motor_r.encoder_ftm_base->CONTROLS[motor_r.encoder_a_channel].CnV;
 		FTM_ClearStatusFlags(motor_r.encoder_ftm_base,
-				motor_r.encoder_a_channel);
+				1u << motor_r.encoder_a_channel);
+		motor_r.update_physical_speed(capture_val_r);
 	}
-
-	// clear interrupt flags on triggered channel(s)
-
-	// notify motor structures with new counter values
 }
+
+
 

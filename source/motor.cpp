@@ -71,8 +71,10 @@ uint16_t Motor::getPhysicalSpeed() {
 	return physical_speed;
 }
 
-//this can be called from the motor drive task if a semaphore has been given from the isr
-void Motor::update_physical_speed() {
+//this is called from an ISR with the latest capture value
+void Motor::update_physical_speed(uint32_t captured) {
+	encoder_a_prev = encoder_a_curr;
+	encoder_a_curr = captured;
 	physical_speed = encoder_a_curr - encoder_a_prev;
 	//could also check physical rotation direction by comparing most recent
 	//time from a and b, but not super important

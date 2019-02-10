@@ -1355,7 +1355,7 @@
                      </config_set>
                   </instance>
                   <instance name="Encoder_Timer" type="ftm" type_id="ftm_04a15ae4af2b404bf2ae403c3dbe98b3" mode="EdgeAligned" peripheral="FTM3" enabled="true">
-                     <config_set name="ftm_main_config" quick_selection="QuickSelectionDefault">
+                     <config_set name="ftm_main_config">
                         <struct name="ftm_config">
                            <setting name="clockSource" value="kFTM_SystemClock"/>
                            <setting name="clockSourceFreq" value="GetFreq"/>
@@ -1388,7 +1388,7 @@
                         <set name="timer_interrupts">
                            <selected/>
                         </set>
-                        <setting name="enable_irq" value="false"/>
+                        <setting name="enable_irq" value="true"/>
                         <struct name="ftm_interrupt">
                            <setting name="IRQn" value="FTM3_IRQn"/>
                            <setting name="enable_priority" value="false"/>

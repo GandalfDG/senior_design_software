@@ -40,7 +40,7 @@ public:
 
 	static void ENCODER_TIMER_IRQHANDLER();
 	
-	void update_physical_speed();
+	void update_physical_speed(uint32_t captured);
 
 	void motor_test(void);
 	uint16_t getPhysicalSpeed();
