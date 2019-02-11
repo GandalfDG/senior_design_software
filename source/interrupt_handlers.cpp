@@ -22,7 +22,7 @@ void FTM3_IRQHandler(void) {
 				motor_l.encoder_ftm_base->CONTROLS[motor_l.encoder_a_channel].CnV;
 		FTM_ClearStatusFlags(motor_l.encoder_ftm_base,
 				1u << motor_l.encoder_a_channel);
-		motor_l.update_physical_speed(capture_val_l);
+		motor_l.update_encoder_period(capture_val_l);
 	}
 
 	if (encoder_r_flags) {
@@ -30,7 +30,7 @@ void FTM3_IRQHandler(void) {
 				motor_r.encoder_ftm_base->CONTROLS[motor_r.encoder_a_channel].CnV;
 		FTM_ClearStatusFlags(motor_r.encoder_ftm_base,
 				1u << motor_r.encoder_a_channel);
-		motor_r.update_physical_speed(capture_val_r);
+		motor_r.update_encoder_period(capture_val_r);
 	}
 }
 

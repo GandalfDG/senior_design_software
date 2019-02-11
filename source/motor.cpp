@@ -6,7 +6,8 @@
  */
 #include <Motor.h>
 
-Motor::Motor(ftm_chnl_t fwd, ftm_chnl_t rev,  ftm_chnl_t enc_a, ftm_chnl_t enc_b) {
+Motor::Motor(ftm_chnl_t fwd, ftm_chnl_t rev, ftm_chnl_t enc_a,
+		ftm_chnl_t enc_b) {
 	forward_channel = fwd;
 	reverse_channel = rev;
 	encoder_a_channel = enc_a;
@@ -21,6 +22,12 @@ Motor::Motor(ftm_chnl_t fwd, ftm_chnl_t rev,  ftm_chnl_t enc_a, ftm_chnl_t enc_b
 
 	pwm_ftm_base = MOTOR_PWM_PERIPHERAL;
 	encoder_ftm_base = ENCODER_TIMER_PERIPHERAL;
+
+}
+
+void Motor::init() {
+	pwm_timer_freq = CLOCK_GetBusClkFreq() / MOTOR_PWM_PERIPHERAL->MOD;
+	encoder_timer_freq = CLOCK_GetBusClkFreq() / ENCODER_TIMER_PERIPHERAL->MOD;
 }
 
 void Motor::set_speed(uint8_t rotation_speed) {
@@ -72,12 +79,18 @@ uint16_t Motor::getPhysicalSpeed() {
 }
 
 //this is called from an ISR with the latest capture value
-void Motor::update_physical_speed(uint32_t captured) {
+void Motor::update_encoder_period(uint32_t captured) {
 	encoder_a_prev = encoder_a_curr;
 	encoder_a_curr = captured;
-	physical_speed = encoder_a_curr - encoder_a_prev;
-	//could also check physical rotation direction by comparing most recent
-	//time from a and b, but not super important
+	if (encoder_a_prev <= encoder_a_curr) {
+		raw_period = encoder_a_curr - encoder_a_prev;
+	} else if (encoder_a_prev > encoder_a_curr) {
+		raw_period = encoder_a_prev - encoder_a_curr;
+	} else {
+		raw_period = 0;
+	}
+	//TODO call this in a motor driving task, not every interrupt
+	period_to_rpm();
 }
 
 void Motor::motor_test(void) {
@@ -112,3 +125,6 @@ void Motor::motor_test(void) {
 
 }
 
+void Motor::period_to_rpm(void) {
+	physical_speed = (raw_period * 12 * 60) / encoder_timer_freq;
+}

@@ -32,6 +32,8 @@ public:
 
 	Motor(ftm_chnl_t fwd, ftm_chnl_t rev, ftm_chnl_t enc_a, ftm_chnl_t enc_b);
 
+	void init();
+
 	void set_speed(uint8_t rotation_speed);
 	void set_direction(direction dir);
 	void stop(void);
@@ -40,21 +42,22 @@ public:
 
 	static void ENCODER_TIMER_IRQHANDLER();
 	
-	void update_physical_speed(uint32_t captured);
+	void update_encoder_period(uint32_t captured);
 
 	void motor_test(void);
 	uint16_t getPhysicalSpeed();
 
 private:
-	// the channels corresponding to driving the motor forward or in reverse
-
+	void period_to_rpm(void);
 	// internal values for determining the actual rotation speed of the motor
 	uint16_t encoder_a_prev, encoder_b_prev;
 	uint16_t encoder_a_curr, encoder_b_curr;
 
+	uint32_t pwm_timer_freq, encoder_timer_freq;
+
 	uint8_t rotation_speed; // 0% - 100%
 	direction rotation_direction;
-	
+	uint16_t raw_period;
 	uint16_t physical_speed;
 };
 

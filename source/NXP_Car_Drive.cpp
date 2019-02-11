@@ -59,8 +59,7 @@
 static void hello_task(void*);
 static void motor_test_task(void*);
 static void servo_test_task(void *pvParameters);
-
-
+static void print_diagnostic_task(void *pvParameters);
 
 User_Interface interface;
 
@@ -76,9 +75,15 @@ int main(void) {
 	/* Init FSL debug console. */
 	BOARD_InitDebugConsole();
 
+	motor_l.init();
+	motor_r.init();
+
 	PortExpander expander;
 
 	expander.begin();
+
+	xTaskCreate(print_diagnostic_task, "Diagnostic task",
+	configMINIMAL_STACK_SIZE + 100, NULL, hello_task_PRIORITY, NULL);
 
 //	if (xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE + 20,
 //	NULL, hello_task_PRIORITY, NULL) != pdPASS) {
@@ -87,17 +92,19 @@ int main(void) {
 //			;
 //	}
 
-//	xTaskCreate(servo_test_task, "Servo_test", configMINIMAL_STACK_SIZE, &servo, hello_task_PRIORITY, NULL);
-//	if (xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
-//			(void*) &motor_l, hello_task_PRIORITY, NULL) != pdPASS
-//			|| xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
-//					(void*) &motor_r, hello_task_PRIORITY, NULL) != pdPASS) {
-//		PRINTF("Task creation failed!.\r\n");
-//		while (1)
-//			;
-//	}
-//
-//	vTaskStartScheduler();
+	xTaskCreate(servo_test_task, "Servo_test", configMINIMAL_STACK_SIZE, &servo,
+	hello_task_PRIORITY, NULL);
+	if (xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
+			(void*) &motor_l, hello_task_PRIORITY, NULL) != pdPASS
+			|| xTaskCreate(motor_test_task, "Motor_test",
+			configMINIMAL_STACK_SIZE, (void*) &motor_r,
+			hello_task_PRIORITY, NULL) != pdPASS) {
+		PRINTF("Task creation failed!.\r\n");
+		while (1)
+			;
+	}
+
+	vTaskStartScheduler();
 	for (;;)
 		;
 }
@@ -125,6 +132,16 @@ static void servo_test_task(void *pvParameters) {
 	Servo* servo_p = (Servo*) pvParameters;
 	for (;;) {
 		servo_p->servo_test();
+	}
+}
+
+static void print_diagnostic_task(void *pvParameters) {
+	for (;;) {
+		PRINTF("Left motor speed set at %d\r\n Physical speed: %d\r\n\r\n",
+				motor_l.getRotationSpeed(), motor_l.getPhysicalSpeed());
+		PRINTF("Right motor speed set at %d\r\n Physical speed: %d\r\n\r\n",
+				motor_r.getRotationSpeed(), motor_r.getPhysicalSpeed());
+		vTaskDelay(pdMS_TO_TICKS(500));
 	}
 }
 
