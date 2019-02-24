@@ -18,6 +18,7 @@
 #include "fsl_port.h"
 #include "fsl_rtc.h"
 #include "fsl_adc16.h"
+#include "fsl_pit.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -106,6 +107,19 @@ extern "C" {
 #define BLUETOOTH_UART_PERIPHERAL UART3
 /* Definition of the clock source frequency */
 #define BLUETOOTH_UART_CLOCK_SOURCE CLOCK_GetFreq(UART3_CLK_SRC)
+/* BOARD_InitPeripherals defines for PIT */
+/* Definition of peripheral ID. */
+#define CAMERA_PIT_PERIPHERAL PIT
+/* Definition of clock source. */
+#define CAMERA_PIT_CLOCK_SOURCE kCLOCK_BusClk
+/* Definition of clock source frequency. */
+#define CAMERA_PIT_CLK_FREQ CLOCK_GetFreq(CAMERA_PIT_CLOCK_SOURCE)
+/* Definition of ticks count for channel 0. */
+#define CAMERA_PIT_0_TICKS USEC_TO_COUNT(12U, CAMERA_PIT_CLK_FREQ) - 1U
+/* Camera_PIT interrupt vector ID (number). */
+#define CAMERA_PIT_0_IRQN PIT0_IRQn
+/* Camera_PIT interrupt handler identifier. */
+#define CAMERA_PIT_0_IRQHANDLER PIT0_IRQHandler
 
 /***********************************************************************************************************************
  * Global variables
@@ -122,6 +136,7 @@ extern const adc16_hardware_average_mode_t Camera_ADC_hardwareAverageMode;
 extern const ftm_config_t Encoder_Timer_config;
 extern const ftm_config_t Camera_Timer_config;
 extern const uart_config_t Bluetooth_UART_config;
+extern const pit_config_t Camera_PIT_config;
 
 /***********************************************************************************************************************
  * Initialization functions

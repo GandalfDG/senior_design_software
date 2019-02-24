@@ -634,7 +634,7 @@ instance:
       - clockSource: 'kFTM_SystemClock'
       - clockSourceFreq: 'GetFreq'
       - prescale: 'kFTM_Prescale_Divide_1'
-      - timerFrequency: '10000'
+      - timerFrequency: '100000'
       - bdmMode: 'kFTM_BdmMode_0'
       - pwmSyncMode: 'kFTM_SoftwareTrigger'
       - reloadPoints: ''
@@ -654,7 +654,14 @@ instance:
       - enable_custom_name: 'false'
     - EnableTimerInInit: 'true'
   - ftm_edge_aligned_mode:
-    - ftm_edge_aligned_channels_config: []
+    - ftm_edge_aligned_channels_config:
+      - 0:
+        - edge_aligned_mode: 'kFTM_EdgeAlignedPwm'
+        - edge_aligned_pwm:
+          - chnlNumber: 'kFTM_Chnl_0'
+          - level: 'kFTM_HighTrue'
+          - dutyCyclePercent: '50'
+          - enable_chan_irq: 'true'
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
 const ftm_config_t Camera_Timer_config = {
@@ -672,9 +679,18 @@ const ftm_config_t Camera_Timer_config = {
   .useGlobalTimeBase = false
 };
 
+const ftm_chnl_pwm_signal_param_t Camera_Timer_pwmSignalParams[] = { 
+  {
+    .chnlNumber = kFTM_Chnl_0,
+    .level = kFTM_HighTrue,
+    .dutyCyclePercent = 50
+  }
+};
+
 void Camera_Timer_init(void) {
   FTM_Init(CAMERA_TIMER_PERIPHERAL, &Camera_Timer_config);
-  FTM_SetTimerPeriod(CAMERA_TIMER_PERIPHERAL, ((CAMERA_TIMER_CLOCK_SOURCE/ (1U << (CAMERA_TIMER_PERIPHERAL->SC & FTM_SC_PS_MASK))) / 10000) + 1);
+  FTM_SetupPwm(CAMERA_TIMER_PERIPHERAL, Camera_Timer_pwmSignalParams, sizeof(Camera_Timer_pwmSignalParams) / sizeof(ftm_chnl_pwm_signal_param_t), kFTM_EdgeAlignedPwm, 100000U, CAMERA_TIMER_CLOCK_SOURCE);
+  FTM_EnableInterrupts(CAMERA_TIMER_PERIPHERAL, kFTM_Chnl0InterruptEnable);
   /* Enable interrupt FTM1_IRQn request in the NVIC */
   EnableIRQ(CAMERA_TIMER_IRQN);
   FTM_StartTimer(CAMERA_TIMER_PERIPHERAL, kFTM_SystemClock);
@@ -723,6 +739,54 @@ void Bluetooth_UART_init(void) {
 }
 
 /***********************************************************************************************************************
+ * Camera_PIT initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'Camera_PIT'
+- type: 'pit'
+- mode: 'LPTMR_GENERAL'
+- type_id: 'pit_a4782ba5223c8a2527ba91aeb2bc4159'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'PIT'
+- config_sets:
+  - fsl_pit:
+    - enableRunInDebug: 'false'
+    - timingConfig:
+      - clockSource: 'BusInterfaceClock'
+      - clockSourceFreq: 'GetFreq'
+    - channels:
+      - 0:
+        - channelNumber: '0'
+        - enableChain: 'false'
+        - timerPeriod: '12.9us'
+        - startTimer: 'true'
+        - enableInterrupt: 'true'
+        - interrupt:
+          - IRQn: 'PIT0_IRQn'
+          - enable_priority: 'false'
+          - enable_custom_name: 'false'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+const pit_config_t Camera_PIT_config = {
+  .enableRunInDebug = false
+};
+
+void Camera_PIT_init(void) {
+  /* Initialize the PIT. */
+  PIT_Init(CAMERA_PIT_PERIPHERAL, &Camera_PIT_config);
+  /* Set channel 0 period to 12.9 µs. */
+  PIT_SetTimerPeriod(CAMERA_PIT_PERIPHERAL, kPIT_Chnl_0, CAMERA_PIT_0_TICKS);
+  /* Enable interrupts from channel 0. */
+  PIT_EnableInterrupts(CAMERA_PIT_PERIPHERAL, kPIT_Chnl_0, kPIT_TimerInterruptEnable);
+  /* Enable interrupt CAMERA_PIT_0_IRQN request in the NVIC */
+  EnableIRQ(CAMERA_PIT_0_IRQN);
+  /* Start channel 0. */
+  PIT_StartTimer(CAMERA_PIT_PERIPHERAL, kPIT_Chnl_0);
+}
+
+/***********************************************************************************************************************
  * Initialization functions
  **********************************************************************************************************************/
 void BOARD_InitPeripherals(void)
@@ -740,6 +804,7 @@ void BOARD_InitPeripherals(void)
   Encoder_Timer_init();
   Camera_Timer_init();
   Bluetooth_UART_init();
+  Camera_PIT_init();
 }
 
 /***********************************************************************************************************************
