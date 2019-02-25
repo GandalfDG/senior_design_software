@@ -90,7 +90,7 @@ void Motor::update_encoder_period(uint32_t captured) {
 		raw_period = 0;
 	}
 	//TODO call this in a motor driving task, not every interrupt
-	period_to_rpm();
+	//period_to_rpm();
 }
 
 void Motor::motor_test(void) {
