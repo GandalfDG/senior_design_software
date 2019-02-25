@@ -36,7 +36,7 @@ public:
 		si_pin{si} {};
 
 	int16_t current_pixel = 0;
-	uint16_t adc_value = 0;
+	uint32_t adc_value = 0;
 
 	uint16_t line_buffer[128];
 

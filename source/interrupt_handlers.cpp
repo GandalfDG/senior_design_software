@@ -79,5 +79,7 @@ void CAMERA_PIT_0_IRQHANDLER(void) {
 	FTM_EnableInterrupts(camera.ftm_base, 1u << camera.ftm_channel);
 }
 
-
+void CAMERA_ADC_IRQHandler(void) {
+	camera.adc_value = ADC16_GetChannelConversionValue(camera.adc_base, 0);
+}
 
