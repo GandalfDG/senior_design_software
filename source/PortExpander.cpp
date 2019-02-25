@@ -9,7 +9,7 @@
   BSD license, all text above must be included in any redistribution
  ****************************************************/
 
-#include <PortExpander.h>''
+#include <PortExpander.h>
 
 #define DEBUG_I2C
 
