@@ -75,6 +75,10 @@ int main(void) {
 
 	motor_l.init();
 	motor_r.init();
+	camera.init();
+	camera.adc_base->SC1[0] |= ADC_SC1_AIEN_MASK;
+
+	//uint32_t test = ADC16_GetChannelConversionValue(camera.adc_base, 0);
 
 	PortExpander expander;
 

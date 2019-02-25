@@ -452,7 +452,7 @@ instance:
         - channelNumber: 'SE.0'
         - enableInterruptOnConversionCompleted: 'true'
         - channelGroup: '0'
-        - initializeChannel: 'false'
+        - initializeChannel: 'true'
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
 adc16_channel_config_t Camera_ADC_channelsConfig[1] = {
@@ -489,6 +489,8 @@ void Camera_ADC_init(void) {
   ADC16_SetChannelMuxMode(CAMERA_ADC_PERIPHERAL, Camera_ADC_muxMode);
   /* Perform auto calibration */
   ADC16_DoAutoCalibration(CAMERA_ADC_PERIPHERAL);
+  /* Initialize channel */
+  ADC16_SetChannelConfig(CAMERA_ADC_PERIPHERAL, 0U, &Camera_ADC_channelsConfig[0]);
 }
 
 /***********************************************************************************************************************

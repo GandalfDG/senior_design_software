@@ -25,6 +25,8 @@ public:
 
 	uint32_t clk_pin, si_pin;
 
+	void init();
+
 	Camera(FTM_Type* ftm, ftm_chnl_t ftm_chnl, PIT_Type* pit, pit_chnl_t pit_chnl, ADC_Type* adc, GPIO_Type* gpio, uint32_t clk, uint32_t si):
 		ftm_base{ftm},
 		ftm_channel{ftm_chnl},
