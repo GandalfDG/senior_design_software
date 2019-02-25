@@ -426,9 +426,9 @@ instance:
   - fsl_adc16:
     - adc16_config:
       - referenceVoltageSource: 'kADC16_ReferenceVoltageSourceVref'
-      - clockSource: 'kADC16_ClockSourceAsynchronousClock'
+      - clockSource: 'kADC16_ClockSourceAlt0'
       - enableAsynchronousClock: 'true'
-      - clockDivider: 'kADC16_ClockDivider8'
+      - clockDivider: 'kADC16_ClockDivider1'
       - resolution: 'kADC16_ResolutionSE16Bit'
       - longSampleMode: 'kADC16_LongSampleDisabled'
       - enableHighSpeed: 'false'
@@ -464,9 +464,9 @@ adc16_channel_config_t Camera_ADC_channelsConfig[1] = {
 };
 const adc16_config_t Camera_ADC_config = {
   .referenceVoltageSource = kADC16_ReferenceVoltageSourceVref,
-  .clockSource = kADC16_ClockSourceAsynchronousClock,
+  .clockSource = kADC16_ClockSourceAlt0,
   .enableAsynchronousClock = true,
-  .clockDivider = kADC16_ClockDivider8,
+  .clockDivider = kADC16_ClockDivider1,
   .resolution = kADC16_ResolutionSE16Bit,
   .longSampleMode = kADC16_LongSampleDisabled,
   .enableHighSpeed = false,
@@ -752,7 +752,7 @@ instance:
 - peripheral: 'PIT'
 - config_sets:
   - fsl_pit:
-    - enableRunInDebug: 'false'
+    - enableRunInDebug: 'true'
     - timingConfig:
       - clockSource: 'BusInterfaceClock'
       - clockSourceFreq: 'GetFreq'
@@ -770,7 +770,7 @@ instance:
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
 const pit_config_t Camera_PIT_config = {
-  .enableRunInDebug = false
+  .enableRunInDebug = true
 };
 
 void Camera_PIT_init(void) {
