@@ -35,7 +35,7 @@ void FTM3_IRQHandler(void) {
 }
 
 //TODO clean this up a bit
-void CAMERA_PIT_0_IRQHandler(void) {
+void CAMERA_TIMER_IRQHandler(void) {
 	int16_t pixel_num = 0;
 	FTM_ClearStatusFlags(camera.ftm_base, 1u << camera.ftm_channel);
 	camera.ftm_base->CNT = 0; //sync the timer
@@ -65,6 +65,18 @@ void CAMERA_PIT_0_IRQHandler(void) {
 
 		FTM_DisableInterrupts(camera.ftm_base, 1u << camera.ftm_channel);
 	}
+}
+
+void CAMERA_PIT_0_IRQHANDLER(void) {
+	//clear PIT interrupt flag
+	PIT_ClearStatusFlags(camera.pit_base, camera.pit_channel, kPIT_TimerFlag);
+
+	// Setting mod resets the FTM counter
+	//TODO Don't think this is necessary...
+    //FTM2_MOD = DEFAULT_SYSTEM_CLOCK / 100000;
+
+	//enable camera FTM interrupts to start capture
+	FTM_EnableInterrupts(camera.ftm_base, 1u << camera.ftm_channel);
 }
 
 

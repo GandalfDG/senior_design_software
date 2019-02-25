@@ -15,6 +15,7 @@
 extern "C" {
 	void FTM3_IRQHandler(void);
 	void CAMERA_PIT_0_IRQHandler(void);
+	void CAMERA_TIMER_IRQHandler(void);
 }
 
 
