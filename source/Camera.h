@@ -15,11 +15,25 @@ class Camera {
 public:
 
 	//peripherals responsible for driving the camera
-	FTM_Type* camera_ftm_base;
-	PIT_Type* camera_pit_base;
-	ADC_Type* camera_adc_base;
+	FTM_Type* ftm_base;
+	ftm_chnl_t ftm_channel;
 
-	Camera();
+	PIT_Type* pit_base;
+	ADC_Type* adc_base;
+	GPIO_Type* gpio_base;
+
+	uint32_t clk_pin, si_pin;
+
+	Camera(FTM_Type* ftm, ftm_chnl_t ftm_chnl, PIT_Type* pit, ADC_Type* adc, GPIO_Type* gpio, uint32_t clk, uint32_t si):
+		ftm_base{ftm}, ftm_channel{ftm_chnl}, pit_base{pit}, adc_base{adc}, gpio_base{gpio}, clk_pin{clk}, si_pin{si} {};
+
+	int16_t current_pixel = 0;
+	uint16_t adc_value = 0;
+
+	uint16_t line_buffer[128];
+
+private:
+
 };
 
 #endif /* CAMERA_H_ */

@@ -8,12 +8,13 @@
 #ifndef INTERRUPT_HANDLERS_H_
 #define INTERRUPT_HANDLERS_H_
 
+#include <Motor.h>
 #include "peripherals.h"
-#include "Motor.h"
 #include "car_components.h"
 
 extern "C" {
 	void FTM3_IRQHandler(void);
+	void CAMERA_PIT_0_IRQHandler(void);
 }
 
 

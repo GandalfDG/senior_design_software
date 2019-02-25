@@ -34,5 +34,38 @@ void FTM3_IRQHandler(void) {
 	}
 }
 
+//TODO clean this up a bit
+void CAMERA_PIT_0_IRQHandler(void) {
+	int16_t pixel_num = 0;
+	FTM_ClearStatusFlags(camera.ftm_base, 1u << camera.ftm_channel);
+	camera.ftm_base->CNT = 0; //sync the timer
+
+	//toggle the clock signal
+	GPIO_PortToggle(camera.gpio_base, 1u << camera.clk_pin);
+
+	pixel_num = camera.current_pixel;
+	if(pixel_num >=2 && pixel_num < 256) {
+		camera.line_buffer[pixel_num/2] = camera.adc_value;
+		camera.current_pixel++;
+	}
+	//generate the SI pulse
+	else if(pixel_num < 2) {
+		if(pixel_num == -1) {
+			GPIO_PinWrite(camera.gpio_base, camera.si_pin, 1);
+		}
+		else if(pixel_num == 1) {
+			GPIO_PinWrite(camera.gpio_base, camera.si_pin, 0);
+			camera.line_buffer[0] = camera.adc_value;
+		}
+		camera.current_pixel++;
+	}
+	else {
+		GPIO_PinWrite(camera.gpio_base, camera.clk_pin, 0);
+		camera.current_pixel = -2;
+
+		FTM_DisableInterrupts(camera.ftm_base, 1u << camera.ftm_channel);
+	}
+}
+
 
 

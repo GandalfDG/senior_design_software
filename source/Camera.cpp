@@ -7,8 +7,4 @@
 
 #include <Camera.h>
 
-Camera::Camera() {
-	// TODO Auto-generated constructor stub
-
-}
 

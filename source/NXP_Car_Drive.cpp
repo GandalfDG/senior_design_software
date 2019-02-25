@@ -45,8 +45,6 @@
 #include "queue.h"
 #include "timers.h"
 
-#include "Motor.h"
-#include "Servo.h"
 #include "PortExpander.h"
 #include "UserInterface.h"
 
