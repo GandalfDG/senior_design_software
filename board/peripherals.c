@@ -426,7 +426,7 @@ instance:
   - fsl_adc16:
     - adc16_config:
       - referenceVoltageSource: 'kADC16_ReferenceVoltageSourceVref'
-      - clockSource: 'kADC16_ClockSourceAlt0'
+      - clockSource: 'kADC16_ClockSourceAsynchronousClock'
       - enableAsynchronousClock: 'true'
       - clockDivider: 'kADC16_ClockDivider1'
       - resolution: 'kADC16_ResolutionSE16Bit'
@@ -452,7 +452,7 @@ instance:
         - channelNumber: 'SE.0'
         - enableInterruptOnConversionCompleted: 'true'
         - channelGroup: '0'
-        - initializeChannel: 'true'
+        - initializeChannel: 'false'
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
 adc16_channel_config_t Camera_ADC_channelsConfig[1] = {
@@ -464,7 +464,7 @@ adc16_channel_config_t Camera_ADC_channelsConfig[1] = {
 };
 const adc16_config_t Camera_ADC_config = {
   .referenceVoltageSource = kADC16_ReferenceVoltageSourceVref,
-  .clockSource = kADC16_ClockSourceAlt0,
+  .clockSource = kADC16_ClockSourceAsynchronousClock,
   .enableAsynchronousClock = true,
   .clockDivider = kADC16_ClockDivider1,
   .resolution = kADC16_ResolutionSE16Bit,
@@ -489,8 +489,6 @@ void Camera_ADC_init(void) {
   ADC16_SetChannelMuxMode(CAMERA_ADC_PERIPHERAL, Camera_ADC_muxMode);
   /* Perform auto calibration */
   ADC16_DoAutoCalibration(CAMERA_ADC_PERIPHERAL);
-  /* Initialize channel */
-  ADC16_SetChannelConfig(CAMERA_ADC_PERIPHERAL, 0U, &Camera_ADC_channelsConfig[0]);
 }
 
 /***********************************************************************************************************************
@@ -644,7 +642,7 @@ instance:
       - faultFilterValue: '0'
       - deadTimePrescale: 'kFTM_Deadtime_Prescale_1'
       - deadTimeValue: '0'
-      - extTriggers: ''
+      - extTriggers: 'kFTM_Chnl0Trigger kFTM_InitTrigger'
       - chnlInitState: ''
       - chnlPolarity: ''
       - useGlobalTimeBase: 'false'
@@ -675,7 +673,7 @@ const ftm_config_t Camera_Timer_config = {
   .faultFilterValue = 0,
   .deadTimePrescale = kFTM_Deadtime_Prescale_1,
   .deadTimeValue = 0,
-  .extTriggers = 0,
+  .extTriggers = kFTM_Chnl0Trigger | kFTM_InitTrigger,
   .chnlInitState = 0,
   .chnlPolarity = 0,
   .useGlobalTimeBase = false
