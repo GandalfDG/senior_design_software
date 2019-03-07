@@ -60,8 +60,13 @@ void FTM1_IRQHandler(void) {
 		camera.current_pixel++;
 	}
 	else {
+		//a full line has been read from the camera - notify the processing task
 		GPIO_PinWrite(camera.gpio_base, camera.clk_pin, 0);
 		camera.current_pixel = -2;
+
+		if(camera.process_task_handle) {
+			vTaskNotifyGiveFromISR(camera.process_task_handle, NULL);
+		}
 
 		FTM_DisableInterrupts(camera.ftm_base, 1u << camera.ftm_channel);
 	}

@@ -58,6 +58,7 @@ static void hello_task(void*);
 static void motor_test_task(void*);
 static void servo_test_task(void *pvParameters);
 static void print_diagnostic_task(void *pvParameters);
+static void process_camera_task(void *pvParameters);
 
 User_Interface interface;
 
@@ -96,6 +97,8 @@ int main(void) {
 
 	xTaskCreate(servo_test_task, "Servo_test", configMINIMAL_STACK_SIZE, &servo,
 	hello_task_PRIORITY, NULL);
+
+	xTaskCreate(process_camera_task, "Camera_process", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY, &camera.process_task_handle);
 	if (xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
 			(void*) &motor_l, hello_task_PRIORITY, NULL) != pdPASS
 			|| xTaskCreate(motor_test_task, "Motor_test",
@@ -145,5 +148,9 @@ static void print_diagnostic_task(void *pvParameters) {
 				motor_r.getRotationSpeed(), motor_r.getPhysicalSpeed());
 		vTaskDelay(pdMS_TO_TICKS(500));
 	}
+}
+
+static void process_camera_task(void *pvParameters) {
+	camera.process();
 }
 

@@ -11,6 +11,11 @@
 #include "MK64F12.h"
 #include "peripherals.h"
 
+#include "fsl_debug_console.h"
+
+#include "FreeRTOS.h"
+#include "task.h"
+
 class Camera {
 public:
 
@@ -25,6 +30,8 @@ public:
 
 	uint32_t clk_pin, si_pin;
 
+	TaskHandle_t process_task_handle;
+
 	void init();
 
 	Camera(FTM_Type* ftm, ftm_chnl_t ftm_chnl, PIT_Type* pit, pit_chnl_t pit_chnl, ADC_Type* adc, GPIO_Type* gpio, uint32_t clk, uint32_t si):
@@ -35,12 +42,15 @@ public:
 		adc_base{adc},
 		gpio_base{gpio},
 		clk_pin{clk},
-		si_pin{si} {};
+		si_pin{si},
+		process_task_handle{NULL} {};
 
 	int16_t current_pixel = 0;
 	uint32_t adc_value = 0;
 
 	uint16_t line_buffer[128];
+
+	void process(void);
 
 private:
 

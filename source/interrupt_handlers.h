@@ -8,6 +8,9 @@
 #ifndef INTERRUPT_HANDLERS_H_
 #define INTERRUPT_HANDLERS_H_
 
+#include "FreeRTOS.h"
+#include "task.h"
+
 #include <Motor.h>
 #include "peripherals.h"
 #include "car_components.h"

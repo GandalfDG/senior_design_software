@@ -21,4 +21,17 @@ void Camera::init() {
 	adcconfig.enableInterruptOnConversionCompleted = true;
 	adcconfig.enableDifferentialConversion = false;
 	ADC16_SetChannelConfig(adc_base, 0, &adcconfig);
+
+}
+
+void Camera::process(void) {
+	for (;;) {
+		//wait for the line buffer to be full
+		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+
+		PRINTF("processing camera");
+
+		vTaskDelay(pdMS_TO_TICKS(1000));
+	}
+
 }
