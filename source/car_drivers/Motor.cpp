@@ -4,7 +4,7 @@
  *  Created on: Jan 4, 2019
  *      Author: Jack
  */
-#include <Motor.h>
+#include <car_drivers/Motor.h>
 
 Motor::Motor(ftm_chnl_t fwd, ftm_chnl_t rev, ftm_chnl_t enc_a,
 		ftm_chnl_t enc_b) {

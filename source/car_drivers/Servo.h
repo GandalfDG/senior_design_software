@@ -5,8 +5,8 @@
  *      Author: Jack
  */
 
-#ifndef SERVO_H_
-#define SERVO_H_
+#ifndef CAR_DRIVERS_SERVO_H_
+#define CAR_DRIVERS_SERVO_H_
 
 #include "MK64f12.h"
 #include "peripherals.h"
@@ -38,4 +38,4 @@ private:
 	uint16_t current_pulse_width;
 };
 
-#endif /* SERVO_H_ */
+#endif /* CAR_DRIVERS_SERVO_H_ */

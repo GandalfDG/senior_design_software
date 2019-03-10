@@ -9,8 +9,8 @@
   BSD license, all text above must be included in any redistribution
  ****************************************************/
 
-#ifndef PORTEXPANDER_H_
-#define PORTEXPANDER_H_
+#ifndef CAR_DRIVERS_PORTEXPANDER_H_
+#define CAR_DRIVERS_PORTEXPANDER_H_
 
 #include "MK64F12.h"
 #include "peripherals.h"
@@ -73,4 +73,4 @@ private:
 #define HIGH 1
 #define LOW 0
 
-#endif /* PORTEXPANDER_H_ */
+#endif /* CAR_DRIVERS_PORTEXPANDER_H_ */

@@ -5,8 +5,8 @@
  *      Author: Jack
  */
 
-#ifndef MOTOR_H_
-#define MOTOR_H_
+#ifndef CAR_DRIVERS_MOTOR_H_
+#define CAR_DRIVERS_MOTOR_H_
 
 #include "MK64F12.h"
 #include "peripherals.h"
@@ -63,4 +63,4 @@ private:
 
 
 
-#endif /* MOTOR_H_ */
+#endif /* CAR_DRIVERS_MOTOR_H_ */

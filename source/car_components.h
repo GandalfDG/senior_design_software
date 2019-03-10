@@ -8,9 +8,9 @@
 #ifndef CAR_COMPONENTS_H_
 #define CAR_COMPONENTS_H_
 
-#include <Motor.h>
-#include "Servo.h"
-#include "Camera.h"
+#include <car_drivers/Camera.h>
+#include <car_drivers/Motor.h>
+#include <car_drivers/Servo.h>
 
 extern Motor motor_l;
 extern Motor motor_r;

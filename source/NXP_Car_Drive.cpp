@@ -32,6 +32,8 @@
  * @file    NXP_Car_Drive.cpp
  * @brief   Application entry point.
  */
+#include <car_drivers/PortExpander.h>
+#include <car_drivers/UserInterface.h>
 #include <stdio.h>
 #include "board.h"
 #include "peripherals.h"
@@ -44,9 +46,6 @@
 #include "task.h"
 #include "queue.h"
 #include "timers.h"
-
-#include "PortExpander.h"
-#include "UserInterface.h"
 
 #include "car_components.h"
 #include "interrupt_handlers.h"

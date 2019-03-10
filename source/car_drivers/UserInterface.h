@@ -11,13 +11,12 @@
   BSD license, all text above must be included in any redistribution
  ****************************************************/
 
-#ifndef USERINTERFACE_H_
-#define USERINTERFACE_H_
+#ifndef CAR_DRIVERS_USERINTERFACE_H_
+#define CAR_DRIVERS_USERINTERFACE_H_
 
+#include <car_drivers/PortExpander.h>
 #include "MK64F12.h"
 #include "peripherals.h"
-#include "PortExpander.h"
-
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -129,4 +128,4 @@ private:
 	PortExpander _i2c;
 };
 
-#endif /* USERINTERFACE_H_ */
+#endif /* CAR_DRIVERS_USERINTERFACE_H_ */

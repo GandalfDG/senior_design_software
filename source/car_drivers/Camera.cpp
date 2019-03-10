@@ -5,7 +5,7 @@
  *      Author: Jack
  */
 
-#include <Camera.h>
+#include <car_drivers/Camera.h>
 
 void Camera::init() {
 	//set gpio pins as output

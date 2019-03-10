@@ -5,8 +5,8 @@
  *      Author: Jack
  */
 
-#ifndef CAMERA_H_
-#define CAMERA_H_
+#ifndef CAR_DRIVERS_CAMERA_H_
+#define CAR_DRIVERS_CAMERA_H_
 
 #include "MK64F12.h"
 #include "peripherals.h"
@@ -56,4 +56,4 @@ private:
 
 };
 
-#endif /* CAMERA_H_ */
+#endif /* CAR_DRIVERS_CAMERA_H_ */
