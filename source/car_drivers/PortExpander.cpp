@@ -21,13 +21,8 @@ void PortExpander::begin(uint8_t addr) {
 	i2caddr = addr;
 
 	// set defaults
-	writeSingleByte(MCP23017_IODIRA, 0xDE);
-	writeSingleByte(MCP23017_IODIRB, 0xAD);
-
-	assert(readSingleByte(MCP23017_IODIRA) == 0xDE);
-	assert(readSingleByte(MCP23017_IODIRB) == 0xAD);
-
-	uint8_t test = readSingleByte(MCP23017_IODIRA);
+	writeSingleByte(MCP23017_IODIRA, 0xFF);
+	writeSingleByte(MCP23017_IODIRB, 0xFF);
 }
 
 void PortExpander::begin(void) {
@@ -160,23 +155,17 @@ uint16_t PortExpander::readGPIOAB() {
 }
 
 status_t PortExpander::writeSingleByte(uint8_t address, uint8_t data) {
-	status_t status = kStatus_Success;
-	// send a start signal with the address of the port expander
-	status = I2C_MasterStart(peripheral_base, (MCP23017_ADDRESS | i2caddr),
-			kI2C_Write);
+	i2c_master_transfer_t xfer;
 
-	// send the address of the register being written
-	status = I2C_MasterWriteBlocking(peripheral_base, &address, 1,
-			kI2C_TransferNoStopFlag);
+	xfer.flags = kI2C_TransferDefaultFlag;
+	xfer.slaveAddress = (MCP23017_ADDRESS | i2caddr);
+	xfer.direction = kI2C_Write;
+	xfer.subaddress = address;
+	xfer.subaddressSize = 1;
+	xfer.data = &data;
+	xfer.dataSize = 1;
 
-	// send the data byte
-	status = I2C_MasterWriteBlocking(peripheral_base, &data, 1,
-			kI2C_TransferNoStopFlag);
-
-	// end the connection
-	status = I2C_MasterStop(peripheral_base);
-
-	return status;
+	I2C_MasterTransferBlocking(peripheral_base, &xfer);
 }
 
 status_t PortExpander::writeSequentialBytes(uint8_t start_address,
