@@ -36,6 +36,7 @@ void FTM3_IRQHandler(void) {
 
 //TODO clean this up a bit
 void FTM1_IRQHandler(void) {
+	BaseType_t woken = pdFALSE;
 	int16_t pixel_num = 0;
 	FTM_ClearStatusFlags(camera.ftm_base, 1u << camera.ftm_channel);
 	camera.ftm_base->CNT = 0; //sync the timer
@@ -65,7 +66,8 @@ void FTM1_IRQHandler(void) {
 		camera.current_pixel = -2;
 
 		if(camera.process_task_handle) {
-			vTaskNotifyGiveFromISR(camera.process_task_handle, NULL);
+			vTaskNotifyGiveFromISR(camera.process_task_handle, &woken);
+			portYIELD_FROM_ISR(woken);
 		}
 
 		FTM_DisableInterrupts(camera.ftm_base, 1u << camera.ftm_channel);

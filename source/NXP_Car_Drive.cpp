@@ -52,7 +52,7 @@
 /* TODO: insert other include files here. */
 
 /* TODO: insert other definitions and declarations here. */
-#define hello_task_PRIORITY (configMAX_PRIORITIES - 1)
+#define hello_task_PRIORITY (configMAX_PRIORITIES - 2)
 static void hello_task(void*);
 static void motor_test_task(void*);
 static void servo_test_task(void *pvParameters);
@@ -82,7 +82,11 @@ int main(void) {
 
 	PortExpander expander;
 
-	expander.begin();
+	__NVIC_SetPriority(FTM1_IRQn, (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1 << __NVIC_PRIO_BITS) - 1UL);
+	__NVIC_SetPriority(ADC0_IRQn, (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1 << __NVIC_PRIO_BITS) - 1UL);
+	__NVIC_SetPriority(PIT0_IRQn, (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1 << __NVIC_PRIO_BITS) - 1UL);
+
+	//expander.begin();
 
 	xTaskCreate(print_diagnostic_task, "Diagnostic task",
 	configMINIMAL_STACK_SIZE + 100, NULL, hello_task_PRIORITY, NULL);
@@ -97,7 +101,8 @@ int main(void) {
 	xTaskCreate(servo_test_task, "Servo_test", configMINIMAL_STACK_SIZE, &servo,
 	hello_task_PRIORITY, NULL);
 
-	xTaskCreate(process_camera_task, "Camera_process", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY, &camera.process_task_handle);
+	xTaskCreate(process_camera_task, "Camera_process", configMINIMAL_STACK_SIZE,
+	NULL, hello_task_PRIORITY + 1, &camera.process_task_handle);
 	if (xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
 			(void*) &motor_l, hello_task_PRIORITY, NULL) != pdPASS
 			|| xTaskCreate(motor_test_task, "Motor_test",

@@ -29,7 +29,7 @@ void Camera::process(void) {
 		//wait for the line buffer to be full
 		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
-		PRINTF("processing camera");
+		PRINTF("processing camera\r\n");
 
 		vTaskDelay(pdMS_TO_TICKS(1000));
 	}
