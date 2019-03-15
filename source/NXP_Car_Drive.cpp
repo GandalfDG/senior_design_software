@@ -86,7 +86,7 @@ int main(void) {
 	__NVIC_SetPriority(ADC0_IRQn, ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1) << __NVIC_PRIO_BITS) - 1UL);
 	__NVIC_SetPriority(PIT0_IRQn, ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1) << __NVIC_PRIO_BITS) - 1UL);
 
-	//expander.begin();
+	expander.begin();
 
 	xTaskCreate(print_diagnostic_task, "Diagnostic task",
 	configMINIMAL_STACK_SIZE + 100, NULL, hello_task_PRIORITY, NULL);

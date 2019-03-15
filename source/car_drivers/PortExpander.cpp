@@ -21,8 +21,11 @@ void PortExpander::begin(uint8_t addr) {
 	i2caddr = addr;
 
 	// set defaults
-	writeSingleByte(MCP23017_IODIRA, 0xFF);
-	writeSingleByte(MCP23017_IODIRB, 0xFF);
+	writeSingleByte(MCP23017_IODIRA, 0xDE);
+	writeSingleByte(MCP23017_IODIRB, 0xAD);
+
+	assert(readSingleByte(MCP23017_IODIRA) == 0xDE);
+	assert(readSingleByte(MCP23017_IODIRB) == 0xAD);
 
 	uint8_t test = readSingleByte(MCP23017_IODIRA);
 }
@@ -173,10 +176,6 @@ status_t PortExpander::writeSingleByte(uint8_t address, uint8_t data) {
 	// end the connection
 	status = I2C_MasterStop(peripheral_base);
 
-#ifdef DEBUG_I2C
-	uint8_t test = readSingleByte(address);
-#endif
-
 	return status;
 }
 
@@ -203,23 +202,23 @@ status_t PortExpander::writeSequentialBytes(uint8_t start_address,
 
 uint8_t PortExpander::readSingleByte(uint8_t address) {
 	uint8_t data;
+	status_t status = kStatus_Success;
 	// send a start signal with the address of the port expander
-	I2C_MasterStart(peripheral_base, (MCP23017_ADDRESS | i2caddr),
+	status = I2C_MasterStart(peripheral_base, (MCP23017_ADDRESS | i2caddr),
 			kI2C_Write);
 
+	status = I2C_MasterRepeatedStart(peripheral_base, address, kI2C_Read);
+
 	// send the address to read from
-	I2C_MasterWriteBlocking(peripheral_base, &address, 1,
+	status = I2C_MasterWriteBlocking(peripheral_base, &address, 1,
 			kI2C_TransferNoStopFlag);
 
-	// send repeated start for read
-	I2C_MasterRepeatedStart(peripheral_base, address, kI2C_Read);
-
 	// read from the given register address into the data buffer
-	I2C_MasterReadBlocking(peripheral_base, &data, 1,
+	status = I2C_MasterReadBlocking(peripheral_base, &data, 1,
 			kI2C_TransferNoStopFlag);
 
 	// end the connection
-	I2C_MasterStop(peripheral_base);
+	status = I2C_MasterStop(peripheral_base);
 
 	return data;
 }
