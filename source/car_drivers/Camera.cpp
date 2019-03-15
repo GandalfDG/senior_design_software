@@ -29,7 +29,21 @@ void Camera::process(void) {
 		//wait for the line buffer to be full
 		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
-		PRINTF("processing camera\r\n");
+		//copy the current line into a local buffer
+		uint16_t current_line[NUM_PIXELS];
+		memcpy((void*)current_line, (const void*)line_buffer, NUM_PIXELS * sizeof(uint16_t));
+
+		//find edges
+		uint16_t max = 0;
+		for(int i = 0; i < NUM_PIXELS; i++) {
+			if(current_line[i] > max) {
+				max = current_line[i];
+			}
+		}
+
+		//pass data to relevant tasks (motor, servo)
+
+		PRINTF("camera line max value: %d\r\n\r\n", max);
 
 		vTaskDelay(pdMS_TO_TICKS(1000));
 	}

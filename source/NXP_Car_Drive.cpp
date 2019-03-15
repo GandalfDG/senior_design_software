@@ -82,9 +82,9 @@ int main(void) {
 
 	PortExpander expander;
 
-	__NVIC_SetPriority(FTM1_IRQn, (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1 << __NVIC_PRIO_BITS) - 1UL);
-	__NVIC_SetPriority(ADC0_IRQn, (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1 << __NVIC_PRIO_BITS) - 1UL);
-	__NVIC_SetPriority(PIT0_IRQn, (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1 << __NVIC_PRIO_BITS) - 1UL);
+	__NVIC_SetPriority(FTM1_IRQn, ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1) << __NVIC_PRIO_BITS) - 1UL);
+	__NVIC_SetPriority(ADC0_IRQn, ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1) << __NVIC_PRIO_BITS) - 1UL);
+	__NVIC_SetPriority(PIT0_IRQn, ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1) << __NVIC_PRIO_BITS) - 1UL);
 
 	//expander.begin();
 
@@ -101,7 +101,7 @@ int main(void) {
 	xTaskCreate(servo_test_task, "Servo_test", configMINIMAL_STACK_SIZE, &servo,
 	hello_task_PRIORITY, NULL);
 
-	xTaskCreate(process_camera_task, "Camera_process", configMINIMAL_STACK_SIZE,
+	xTaskCreate(process_camera_task, "Camera_process", NUM_PIXELS * sizeof(uint16_t) * 2,
 	NULL, hello_task_PRIORITY + 1, &camera.process_task_handle);
 	if (xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
 			(void*) &motor_l, hello_task_PRIORITY, NULL) != pdPASS
