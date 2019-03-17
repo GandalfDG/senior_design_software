@@ -347,8 +347,9 @@ void User_Interface::pulseEnable() {
 
 }
 
-void User_Interface::_digitalWrite(uint8_t unsignedChar,
-		uint8_t unsignedChar1) {
+void User_Interface::_digitalWrite(uint8_t p,
+		uint8_t d) {
+	_i2c.digitalWrite(p, d);
 }
 
 void User_Interface::_pinMode(uint8_t p, uint8_t d) {

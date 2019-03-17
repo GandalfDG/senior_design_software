@@ -76,7 +76,7 @@ void PortExpander::digitalWrite(uint8_t p, uint8_t d) {
 	}
 
 	// read the current FPIO output latches
-	readSingleByte(olataddr);
+	gpio = readSingleByte(olataddr);
 
 	// set the pin and direction
 	if (d == HIGH) {

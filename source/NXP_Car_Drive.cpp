@@ -58,6 +58,7 @@ static void motor_test_task(void*);
 static void servo_test_task(void *pvParameters);
 static void print_diagnostic_task(void *pvParameters);
 static void process_camera_task(void *pvParameters);
+static void user_interface_task(void *pvParameters);
 
 User_Interface interface;
 
@@ -81,12 +82,15 @@ int main(void) {
 	//uint32_t test = ADC16_GetChannelConversionValue(camera.adc_base, 0);
 
 	PortExpander expander;
+	User_Interface interface;
 
 	__NVIC_SetPriority(FTM1_IRQn, ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1) << __NVIC_PRIO_BITS) - 1UL);
 	__NVIC_SetPriority(ADC0_IRQn, ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1) << __NVIC_PRIO_BITS) - 1UL);
 	__NVIC_SetPriority(PIT0_IRQn, ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1) << __NVIC_PRIO_BITS) - 1UL);
 
 	expander.begin();
+
+
 
 	xTaskCreate(print_diagnostic_task, "Diagnostic task",
 	configMINIMAL_STACK_SIZE + 100, NULL, hello_task_PRIORITY, NULL);
@@ -100,6 +104,9 @@ int main(void) {
 
 	xTaskCreate(servo_test_task, "Servo_test", configMINIMAL_STACK_SIZE, &servo,
 	hello_task_PRIORITY, NULL);
+
+	xTaskCreate(user_interface_task, "UI", configMINIMAL_STACK_SIZE, NULL,
+		hello_task_PRIORITY, NULL);
 
 	xTaskCreate(process_camera_task, "Camera_process", NUM_PIXELS * sizeof(uint16_t) * 2,
 	NULL, hello_task_PRIORITY + 1, &camera.process_task_handle);
@@ -156,5 +163,16 @@ static void print_diagnostic_task(void *pvParameters) {
 
 static void process_camera_task(void *pvParameters) {
 	camera.process();
+}
+
+static void user_interface_task(void *pvParameters) {
+	interface.begin(16, 2, 0);
+	interface.clear();
+	interface.blink();
+	interface.leftToRight();
+	interface.setCursor(5, 1);
+	interface.write('A');
+	interface.write('H');
+	for(;;);
 }
 
