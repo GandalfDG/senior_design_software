@@ -60,7 +60,7 @@ static void print_diagnostic_task(void *pvParameters);
 static void process_camera_task(void *pvParameters);
 static void user_interface_task(void *pvParameters);
 
-User_Interface interface;
+
 
 /*
  * @brief   Application entry point.
@@ -81,8 +81,7 @@ int main(void) {
 
 	//uint32_t test = ADC16_GetChannelConversionValue(camera.adc_base, 0);
 
-	PortExpander expander;
-	User_Interface interface;
+
 
 	__NVIC_SetPriority(FTM1_IRQn, ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1) << __NVIC_PRIO_BITS) - 1UL);
 	__NVIC_SetPriority(ADC0_IRQn, ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1) << __NVIC_PRIO_BITS) - 1UL);
@@ -105,7 +104,7 @@ int main(void) {
 	xTaskCreate(servo_test_task, "Servo_test", configMINIMAL_STACK_SIZE, &servo,
 	hello_task_PRIORITY, NULL);
 
-	xTaskCreate(user_interface_task, "UI", configMINIMAL_STACK_SIZE, NULL,
+	xTaskCreate(user_interface_task, "UI", configMINIMAL_STACK_SIZE + 100, NULL,
 		hello_task_PRIORITY, NULL);
 
 	xTaskCreate(process_camera_task, "Camera_process", NUM_PIXELS * sizeof(uint16_t) * 2,
@@ -181,7 +180,15 @@ static void user_interface_task(void *pvParameters) {
 		uint8_t button = interface.readButtons();
 		if(button) {
 			interface.setCursor(0,1);
-			interface.print("button");
+			if(button & BUTTON_LEFT) {
+				interface.print("left");
+			}
+			else if (button & BUTTON_UP) {
+				interface.print("up");
+			}
+			else if (button & BUTTON_RIGHT) {
+				interface.print("right");
+			}
 			vTaskDelay(pdMS_TO_TICKS(1000));
 			interface.setCursor(0,1);
 			interface.print("      ");

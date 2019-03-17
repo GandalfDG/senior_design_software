@@ -11,6 +11,8 @@
 #include <car_drivers/Camera.h>
 #include <car_drivers/Motor.h>
 #include <car_drivers/Servo.h>
+#include <car_drivers/PortExpander.h>
+#include <car_drivers/UserInterface.h>
 
 extern Motor motor_l;
 extern Motor motor_r;
@@ -18,6 +20,9 @@ extern Motor motor_r;
 extern Servo servo;
 
 extern Camera camera;
+
+extern PortExpander expander;
+extern User_Interface interface;
 
 
 
