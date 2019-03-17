@@ -22,6 +22,8 @@
 #include "queue.h"
 #include "timers.h"
 
+#include <string>
+
 // commands
 #define LCD_CLEARDISPLAY 0x01
 #define LCD_RETURNHOME 0x02
@@ -102,6 +104,9 @@ public:
 
 	void command(uint8_t);
 	uint8_t readButtons();
+
+	size_t write(const char *buffer, size_t size);
+	size_t print(const std::string &s);
 
 private:
 	void send(uint8_t, uint8_t);

@@ -170,9 +170,23 @@ static void user_interface_task(void *pvParameters) {
 	interface.clear();
 	interface.blink();
 	interface.leftToRight();
-	interface.setCursor(5, 1);
-	interface.write('A');
-	interface.write('H');
-	for(;;);
+	interface.print("TEST  CALIB  RUN");
+	interface.setCursor(1, 1);
+	interface.write(0x7F);
+	interface.setCursor(8, 1);
+	interface.write(0x5E);
+	interface.setCursor(14, 1);
+	interface.write(0x7E);
+	for(;;) {
+		uint8_t button = interface.readButtons();
+		if(button) {
+			interface.setCursor(0,1);
+			interface.print("button");
+			vTaskDelay(pdMS_TO_TICKS(1000));
+			interface.setCursor(0,1);
+			interface.print("      ");
+		}
+
+	}
 }
 

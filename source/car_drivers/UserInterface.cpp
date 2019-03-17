@@ -347,12 +347,26 @@ void User_Interface::pulseEnable() {
 
 }
 
-void User_Interface::_digitalWrite(uint8_t p,
-		uint8_t d) {
+void User_Interface::_digitalWrite(uint8_t p, uint8_t d) {
 	_i2c.digitalWrite(p, d);
 }
 
 void User_Interface::_pinMode(uint8_t p, uint8_t d) {
 	// an i2c command
 	_i2c.pinMode(p, d);
+}
+
+size_t User_Interface::write(const char *buffer, size_t size) {
+	size_t n = 0;
+	while (size--) {
+		if (write(*buffer++))
+			n++;
+		else
+			break;
+	}
+	return n;
+}
+
+size_t User_Interface::print(const std::string &s) {
+	return write(s.c_str(), s.length());
 }
