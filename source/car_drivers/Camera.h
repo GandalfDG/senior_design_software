@@ -16,10 +16,23 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#define NUM_PIXELS (128)
+#include <stdint.h>
+
+#define NUM_PIXELS (128)			//the number of camera pixels
+#define CALIBRATION_COUNT (256)		//the number of camera readings to average for calibration
 
 class Camera {
 public:
+
+	struct data {
+		uint8_t left_edge_inner, left_edge_outer;
+		uint8_t right_edge_inner, right_edge_outer;
+		uint8_t center;
+	};
+
+	struct calibration {
+		uint16_t max, min, threshold;
+	} calibration;
 
 	//peripherals responsible for driving the camera
 	FTM_Type* ftm_base;
@@ -32,7 +45,12 @@ public:
 
 	uint32_t clk_pin, si_pin;
 
-	TaskHandle_t process_task_handle;
+	TaskHandle_t task_handle;
+
+	int16_t current_pixel = 0;
+	uint32_t adc_value = 0;
+
+	uint16_t line_buffer[NUM_PIXELS];
 
 	void init();
 
@@ -45,17 +63,14 @@ public:
 		gpio_base{gpio},
 		clk_pin{clk},
 		si_pin{si},
-		process_task_handle{NULL} {};
-
-	int16_t current_pixel = 0;
-	uint32_t adc_value = 0;
-
-	uint16_t line_buffer[NUM_PIXELS];
+		task_handle{NULL} {};
 
 	void process(void);
+	void calibrate(void);
 
 private:
-
+	void filter(void);
+	void find_edges(uint16_t *camline, struct data *camdata);
 };
 
 #endif /* CAR_DRIVERS_CAMERA_H_ */
