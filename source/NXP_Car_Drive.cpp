@@ -49,18 +49,14 @@
 
 #include "car_components.h"
 #include "interrupt_handlers.h"
-/* TODO: insert other include files here. */
 
-/* TODO: insert other definitions and declarations here. */
 #define hello_task_PRIORITY (configMAX_PRIORITIES - 2)
 static void hello_task(void*);
 static void motor_test_task(void*);
 static void servo_test_task(void *pvParameters);
 static void print_diagnostic_task(void *pvParameters);
-static void process_camera_task(void *pvParameters);
+static void camera_task(void *pvParameters);
 static void user_interface_task(void *pvParameters);
-
-
 
 /*
  * @brief   Application entry point.
@@ -68,7 +64,7 @@ static void user_interface_task(void *pvParameters);
 int main(void) {
 
 	/* Init board hardware. */
-	BOARD_InitBootPins();
+ 	BOARD_InitBootPins();
 	BOARD_InitBootClocks();
 	BOARD_InitBootPeripherals();
 	/* Init FSL debug console. */
@@ -81,15 +77,17 @@ int main(void) {
 
 	//uint32_t test = ADC16_GetChannelConversionValue(camera.adc_base, 0);
 
-
-
-	__NVIC_SetPriority(FTM1_IRQn, ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1) << __NVIC_PRIO_BITS) - 1UL);
-	__NVIC_SetPriority(ADC0_IRQn, ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1) << __NVIC_PRIO_BITS) - 1UL);
-	__NVIC_SetPriority(PIT0_IRQn, ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1) << __NVIC_PRIO_BITS) - 1UL);
+	__NVIC_SetPriority(FTM1_IRQn,
+			((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1)
+					<< __NVIC_PRIO_BITS) - 1UL);
+	__NVIC_SetPriority(ADC0_IRQn,
+			((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1)
+					<< __NVIC_PRIO_BITS) - 1UL);
+	__NVIC_SetPriority(PIT0_IRQn,
+			((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1)
+					<< __NVIC_PRIO_BITS) - 1UL);
 
 	expander.begin();
-
-
 
 	xTaskCreate(print_diagnostic_task, "Diagnostic task",
 	configMINIMAL_STACK_SIZE + 100, NULL, hello_task_PRIORITY, NULL);
@@ -102,18 +100,19 @@ int main(void) {
 //	}
 
 	xTaskCreate(servo_test_task, "Servo_test", configMINIMAL_STACK_SIZE, &servo,
-	hello_task_PRIORITY, NULL);
+	hello_task_PRIORITY, &servo.test_task_handle);
 
 	xTaskCreate(user_interface_task, "UI", configMINIMAL_STACK_SIZE + 100, NULL,
-		hello_task_PRIORITY, NULL);
+	hello_task_PRIORITY, &interface.task_handle);
 
-	xTaskCreate(process_camera_task, "Camera_process", NUM_PIXELS * sizeof(uint16_t) * 2,
-	NULL, hello_task_PRIORITY + 1, &camera.process_task_handle);
+	xTaskCreate(camera_task, "Camera_process",
+			NUM_PIXELS * sizeof(uint16_t) * 2,
+			NULL, hello_task_PRIORITY + 1, &camera.task_handle);
 	if (xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
-			(void*) &motor_l, hello_task_PRIORITY, NULL) != pdPASS
+			(void*) &motor_l, hello_task_PRIORITY, &motor_l.test_task_handle) != pdPASS
 			|| xTaskCreate(motor_test_task, "Motor_test",
 			configMINIMAL_STACK_SIZE, (void*) &motor_r,
-			hello_task_PRIORITY, NULL) != pdPASS) {
+			hello_task_PRIORITY, &motor_r.test_task_handle) != pdPASS) {
 		PRINTF("Task creation failed!.\r\n");
 		while (1)
 			;
@@ -160,15 +159,13 @@ static void print_diagnostic_task(void *pvParameters) {
 	}
 }
 
-static void process_camera_task(void *pvParameters) {
+static void camera_task(void *pvParameters) {
 	camera.process();
 }
 
-static void user_interface_task(void *pvParameters) {
-	interface.begin(16, 2, 0);
+void print_interface() {
 	interface.clear();
-	interface.blink();
-	interface.leftToRight();
+	interface.setCursor(0,0);
 	interface.print("TEST  CALIB  RUN");
 	interface.setCursor(1, 1);
 	interface.write(0x7F);
@@ -176,22 +173,44 @@ static void user_interface_task(void *pvParameters) {
 	interface.write(0x5E);
 	interface.setCursor(14, 1);
 	interface.write(0x7E);
-	for(;;) {
+}
+
+static void user_interface_task(void *pvParameters) {
+	interface.begin(16, 2, 0);
+	print_interface();
+	for (;;) {
 		uint8_t button = interface.readButtons();
-		if(button) {
-			interface.setCursor(0,1);
-			if(button & BUTTON_LEFT) {
-				interface.print("left");
+		if (button) {
+			interface.clear();
+			interface.setCursor(0, 0);
+			//start test
+			if (button & BUTTON_LEFT) {
+				interface.print("Running Test...");
+				//start test task
+				if((eTaskGetState(motor_l.test_task_handle) == eSuspended) && (eTaskGetState(motor_r.test_task_handle) == eSuspended)) {
+					vTaskResume(motor_l.test_task_handle);
+					vTaskResume(motor_r.test_task_handle);
+				}
+				if(eTaskGetState(servo.test_task_handle) == eSuspended) {
+					vTaskResume(servo.test_task_handle);
+				}
 			}
+			//start calibration
 			else if (button & BUTTON_UP) {
-				interface.print("up");
+				interface.print("Running Calibration");
+				//start calibration task
 			}
+			//start running
 			else if (button & BUTTON_RIGHT) {
-				interface.print("right");
+				interface.print("Starting Car!");
+				//run main driving task
+			}
+			//stop running
+			else {
+				interface.print("***ABORT***");
 			}
 			vTaskDelay(pdMS_TO_TICKS(1000));
-			interface.setCursor(0,1);
-			interface.print("      ");
+			print_interface();
 		}
 
 	}

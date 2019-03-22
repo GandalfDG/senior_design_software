@@ -65,8 +65,8 @@ void FTM1_IRQHandler(void) {
 		GPIO_PinWrite(camera.gpio_base, camera.clk_pin, 0);
 		camera.current_pixel = -2;
 
-		if(camera.process_task_handle) {
-			vTaskNotifyGiveFromISR(camera.process_task_handle, &woken);
+		if(camera.task_handle) {
+			vTaskNotifyGiveFromISR(camera.task_handle, &woken);
 			portYIELD_FROM_ISR(woken);
 		}
 
