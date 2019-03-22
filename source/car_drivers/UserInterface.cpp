@@ -14,7 +14,6 @@
 #include <car_drivers/UserInterface.h>
 
 User_Interface::User_Interface() {
-	// TODO Auto-generated constructor stub
 	_i2cAddr = 0;
 
 	_displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
@@ -37,7 +36,6 @@ User_Interface::User_Interface() {
 }
 
 User_Interface::~User_Interface() {
-	// TODO Auto-generated destructor stub
 }
 
 void User_Interface::init(uint8_t fourbitmode, uint8_t rs, uint8_t rw,

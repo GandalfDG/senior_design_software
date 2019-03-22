@@ -70,6 +70,8 @@
 
 class User_Interface {
 public:
+	TaskHandle_t task_handle;
+
 	User_Interface();
 	virtual ~User_Interface();
 
