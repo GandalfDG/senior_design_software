@@ -94,6 +94,7 @@ void Motor::update_encoder_period(uint32_t captured) {
 }
 
 void Motor::motor_test(void) {
+	vTaskSuspend(NULL);
 	set_direction(FORWARD);
 
 	// drive motors from 0 to full forward
@@ -121,8 +122,6 @@ void Motor::motor_test(void) {
 		set_speed(i);
 		vTaskDelay(pdMS_TO_TICKS(MOTOR_TEST_PERIOD));
 	}
-	vTaskSuspend(NULL);
-
 }
 
 void Motor::period_to_rpm(void) {

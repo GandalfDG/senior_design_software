@@ -26,6 +26,8 @@ public:
 	FTM_Type* pwm_ftm_base;
 	FTM_Type* encoder_ftm_base;
 
+	TaskHandle_t test_task_handle;
+
 	// the channels corresponding to driving the motor forward or in reverse
 	ftm_chnl_t forward_channel, reverse_channel;
 	ftm_chnl_t encoder_a_channel, encoder_b_channel;

@@ -33,6 +33,8 @@ void Servo::set_position(uint16_t pos) {
 }
 
 void Servo::servo_test(void) {
+	vTaskSuspend(NULL);
+
 	// start at center
 	set_position(center_pulse_width);
 
@@ -40,7 +42,7 @@ void Servo::servo_test(void) {
 	for (int i = center_pulse_width; i >= left_pulse_width; i -=
 	SERVO_TEST_STEP) {
 		set_position(i);
-		vTaskDelay(pdMS_TO_TICKS(SERVO_TEST_PERIOD));
+		vTaskDelay(pdMS_TO_TICKS(1));
 	}
 
 	// move to full right
@@ -48,16 +50,14 @@ void Servo::servo_test(void) {
 	for (int i = left_pulse_width; i <= right_pulse_width; i +=
 	SERVO_TEST_STEP) {
 		set_position(i);
-		vTaskDelay(pdMS_TO_TICKS(SERVO_TEST_PERIOD));
+		vTaskDelay(pdMS_TO_TICKS(1));
 	}
 
 	// move back to center
 	for (int i = right_pulse_width; i >= center_pulse_width; i -=
 	SERVO_TEST_STEP) {
 		set_position(i);
-		vTaskDelay(pdMS_TO_TICKS(SERVO_TEST_PERIOD));
+		vTaskDelay(pdMS_TO_TICKS(1));
 	}
-
-	vTaskSuspend(NULL);
 
 }

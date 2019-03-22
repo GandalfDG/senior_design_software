@@ -21,6 +21,8 @@
 class Servo {
 public:
 
+	TaskHandle_t test_task_handle;
+
 	FTM_Type* pwm_ftm_base = SERVO_PWM_PERIPHERAL;
 
 
