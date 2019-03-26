@@ -27,10 +27,12 @@ void Camera::init() {
 void Camera::process(void) {
 	uint16_t current_line[NUM_PIXELS];
 	uint16_t previous_line[NUM_PIXELS];
+	uint16_t *temp;
 	struct data camdata;
 
 	//initialize camera data struct
 	camdata.center = NUM_PIXELS / 2;
+	camdata.prev_center = camdata.center;
 
 	//load the previous value on the first run
 	ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
@@ -108,8 +110,28 @@ void Camera::calibrate(void) {
 }
 
 void Camera::find_edges(uint16_t* camline, struct data* camdata) {
-	camdata->left_edge_inner = -1;
-	camdata->left_edge_outer = -1;
-	camdata->right_edge_inner = -1;
-	camdata->right_edge_outer = -1;
+	camdata->left_edge_inner = find_edge_between(camdata->prev_center, NUM_PIXELS, camline, RISING);
+	camdata->left_edge_outer = find_edge_between(camdata->left_edge_inner, NUM_PIXELS, camline, FALLING);
+	camdata->right_edge_outer = find_edge_between(0, camdata->prev_center, camline, RISING);
+	camdata->right_edge_inner = find_edge_between(camdata->right_edge_outer, camdata->prev_center, camline, FALLING);
+
+
+}
+
+uint8_t Camera::find_edge_between(uint8_t lower_bound, uint8_t upper_bound,
+		uint16_t *camline, edge_polarity pol) {
+	uint8_t edge = -1;
+	for(int i = lower_bound; i < upper_bound && edge == -1; i++) {
+		if(pol == RISING) {
+			if(camline[i] > calibration.threshold) {
+				edge = i;
+			}
+		}
+		else {
+			if(camline[i] < calibration.threshold) {
+				edge = i;
+			}
+		}
+	}
+	return edge;
 }

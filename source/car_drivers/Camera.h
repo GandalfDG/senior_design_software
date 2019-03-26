@@ -27,12 +27,16 @@ public:
 	struct data {
 		uint8_t left_edge_inner, left_edge_outer;
 		uint8_t right_edge_inner, right_edge_outer;
-		uint8_t center;
+		uint8_t center, prev_center;
 	};
 
 	struct calibration {
 		uint16_t max, min, threshold;
 	} calibration;
+
+	enum edge_polarity {
+		RISING, FALLING
+	};
 
 	//peripherals responsible for driving the camera
 	FTM_Type* ftm_base;
@@ -54,16 +58,14 @@ public:
 
 	void init();
 
-	Camera(FTM_Type* ftm, ftm_chnl_t ftm_chnl, PIT_Type* pit, pit_chnl_t pit_chnl, ADC_Type* adc, GPIO_Type* gpio, uint32_t clk, uint32_t si):
-		ftm_base{ftm},
-		ftm_channel{ftm_chnl},
-		pit_base{pit},
-		pit_channel{pit_chnl},
-		adc_base{adc},
-		gpio_base{gpio},
-		clk_pin{clk},
-		si_pin{si},
-		task_handle{NULL} {};
+	Camera(FTM_Type* ftm, ftm_chnl_t ftm_chnl, PIT_Type* pit,
+			pit_chnl_t pit_chnl, ADC_Type* adc, GPIO_Type* gpio, uint32_t clk,
+			uint32_t si) :
+			ftm_base { ftm }, ftm_channel { ftm_chnl }, pit_base { pit }, pit_channel {
+					pit_chnl }, adc_base { adc }, gpio_base { gpio }, clk_pin {
+					clk }, si_pin { si }, task_handle { NULL } {
+	}
+	;
 
 	void process(void);
 	void calibrate(void);
@@ -71,6 +73,8 @@ public:
 private:
 	void filter(void);
 	void find_edges(uint16_t *camline, struct data *camdata);
+	uint8_t find_edge_between(uint8_t lower_bound, uint8_t upper_bound,
+			uint16_t *camline, edge_polarity pol);
 };
 
 #endif /* CAR_DRIVERS_CAMERA_H_ */
