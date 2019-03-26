@@ -75,6 +75,7 @@ private:
 	void find_edges(uint16_t *camline, struct data *camdata);
 	uint8_t find_edge_between(uint8_t lower_bound, uint8_t upper_bound,
 			uint16_t *camline, edge_polarity pol);
+	uint8_t calculate_centerline(struct data *camdata);
 };
 
 #endif /* CAR_DRIVERS_CAMERA_H_ */
