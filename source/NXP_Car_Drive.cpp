@@ -58,13 +58,17 @@ static void print_diagnostic_task(void *pvParameters);
 static void camera_task(void *pvParameters);
 static void user_interface_task(void *pvParameters);
 
+//test drive
+static void circle_drive_task(void *pvParameters);
+TaskHandle_t circle_handle;
+
 /*
  * @brief   Application entry point.
  */
 int main(void) {
 
 	/* Init board hardware. */
- 	BOARD_InitBootPins();
+	BOARD_InitBootPins();
 	BOARD_InitBootClocks();
 	BOARD_InitBootPeripherals();
 	/* Init FSL debug console. */
@@ -99,24 +103,19 @@ int main(void) {
 //			;
 //	}
 
-	xTaskCreate(servo_test_task, "Servo_test", configMINIMAL_STACK_SIZE, &servo,
-	hello_task_PRIORITY, &servo.test_task_handle);
+//	xTaskCreate(servo_test_task, "Servo_test", configMINIMAL_STACK_SIZE, &servo,
+//	hello_task_PRIORITY, &servo.test_task_handle);
 
-	xTaskCreate(user_interface_task, "UI", configMINIMAL_STACK_SIZE + 100, NULL,
-	hello_task_PRIORITY, &interface.task_handle);
+//	xTaskCreate(user_interface_task, "UI", configMINIMAL_STACK_SIZE + 100, NULL,
+//	hello_task_PRIORITY, &interface.task_handle);
+
+//	xTaskCreate(circle_drive_task, "Circle Drive", configMINIMAL_STACK_SIZE,
+//			NULL,
+//			hello_task_PRIORITY, &circle_handle);
 
 	xTaskCreate(camera_task, "Camera_process",
-			NUM_PIXELS * sizeof(uint16_t) * 2,
-			NULL, hello_task_PRIORITY + 1, &camera.task_handle);
-	if (xTaskCreate(motor_test_task, "Motor_test", configMINIMAL_STACK_SIZE,
-			(void*) &motor_l, hello_task_PRIORITY, &motor_l.test_task_handle) != pdPASS
-			|| xTaskCreate(motor_test_task, "Motor_test",
-			configMINIMAL_STACK_SIZE, (void*) &motor_r,
-			hello_task_PRIORITY, &motor_r.test_task_handle) != pdPASS) {
-		PRINTF("Task creation failed!.\r\n");
-		while (1)
-			;
-	}
+	NUM_PIXELS * sizeof(uint16_t) * 2,
+	NULL, hello_task_PRIORITY + 1, &camera.task_handle);
 
 	vTaskStartScheduler();
 	for (;;)
@@ -151,21 +150,26 @@ static void servo_test_task(void *pvParameters) {
 
 static void print_diagnostic_task(void *pvParameters) {
 	for (;;) {
-		PRINTF("Left motor speed set at %d\r\n Physical speed: %d\r\n\r\n",
-				motor_l.getRotationSpeed(), motor_l.getPhysicalSpeed());
-		PRINTF("Right motor speed set at %d\r\n Physical speed: %d\r\n\r\n",
-				motor_r.getRotationSpeed(), motor_r.getPhysicalSpeed());
+		PRINTF("motor_l: %d   motor_r: %d  servo: %d\r\n",
+				motor_l.getRotationSpeed(), motor_r.getRotationSpeed(), servo.current_pulse_width);
+		PRINTF("outer_l: %d  inner_l: %d  center: %d inner_r: %d  outer_r: %d\r\n\r\n",
+				camera.camera_data.left_edge_outer,
+				camera.camera_data.left_edge_inner,
+				camera.camera_data.center,
+				camera.camera_data.right_edge_inner,
+				camera.camera_data.right_edge_outer);
 		vTaskDelay(pdMS_TO_TICKS(500));
 	}
 }
 
 static void camera_task(void *pvParameters) {
+	camera.calibrate();
 	camera.process();
 }
 
 void print_interface() {
 	interface.clear();
-	interface.setCursor(0,0);
+	interface.setCursor(0, 0);
 	interface.print("TEST  CALIB  RUN");
 	interface.setCursor(1, 1);
 	interface.write(0x7F);
@@ -175,42 +179,64 @@ void print_interface() {
 	interface.write(0x7E);
 }
 
+static void circle_drive_task(void *pvParameters) {
+//	vTaskSuspend(NULL);
+	servo.set_position(600);
+	motor_l.set_direction(Motor::FORWARD);
+	motor_r.set_direction(Motor::FORWARD);
+	motor_l.set_speed(60);
+	motor_r.set_speed(60);
+	for (;;)
+		;
+}
+
 static void user_interface_task(void *pvParameters) {
 	interface.begin(16, 2, 0);
 	print_interface();
 	for (;;) {
 		uint8_t button = interface.readButtons();
-		if (button) {
+		if (button && button != 255) {
 			interface.clear();
 			interface.setCursor(0, 0);
 			//start test
-			if (button & BUTTON_LEFT) {
+			if (button == BUTTON_LEFT) {
 				interface.print("Running Test...");
 				//start test task
-				if((eTaskGetState(motor_l.test_task_handle) == eSuspended) && (eTaskGetState(motor_r.test_task_handle) == eSuspended)) {
+				if ((eTaskGetState(motor_l.test_task_handle) == eSuspended)
+						&& (eTaskGetState(motor_r.test_task_handle)
+								== eSuspended)) {
 					vTaskResume(motor_l.test_task_handle);
 					vTaskResume(motor_r.test_task_handle);
 				}
-				if(eTaskGetState(servo.test_task_handle) == eSuspended) {
+				if (eTaskGetState(servo.test_task_handle) == eSuspended) {
 					vTaskResume(servo.test_task_handle);
 				}
 			}
 			//start calibration
-			else if (button & BUTTON_UP) {
+			else if (button == BUTTON_UP) {
 				interface.print("Running Calibration");
 				//start calibration task
 			}
 			//start running
-			else if (button & BUTTON_RIGHT) {
+			else if (button == BUTTON_RIGHT) {
 				interface.print("Starting Car!");
 				//run main driving task
+				vTaskResume(&circle_handle);
 			}
 			//stop running
 			else {
 				interface.print("***ABORT***");
+				motor_l.set_speed(0);
+				motor_r.set_speed(0);
+
 			}
 			vTaskDelay(pdMS_TO_TICKS(1000));
 			print_interface();
+		}
+		//lost i2c connection
+		if (button == 255) {
+			motor_l.set_speed(0);
+			motor_r.set_speed(0);
 		}
 
 	}

@@ -28,11 +28,10 @@ void Camera::process(void) {
 	uint16_t current_line[NUM_PIXELS];
 	uint16_t previous_line[NUM_PIXELS];
 	uint16_t *temp;
-	struct data camdata;
 
 	//initialize camera data struct
-	camdata.center = NUM_PIXELS / 2;
-	camdata.prev_center = camdata.center;
+	camera_data.center = NUM_PIXELS / 2;
+	camera_data.prev_center = camera_data.center;
 
 	//load the previous value on the first run
 	ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
@@ -48,12 +47,7 @@ void Camera::process(void) {
 				NUM_PIXELS * sizeof(uint16_t));
 
 		//find edges
-		uint16_t max = 0;
-		for (int i = 0; i < NUM_PIXELS; i++) {
-			if (current_line[i] > max) {
-				max = current_line[i];
-			}
-		}
+		find_edges(current_line);
 
 		//move current line to previous line
 		//TODO optimize this by swapping pointers around instead of copying all the time
@@ -80,7 +74,6 @@ void Camera::calibrate(void) {
 	//initialize the calibration struct
 	calibration.max = 0;
 	calibration.min = UINT16_MAX;
-	calibration.threshold = 0;
 
 	memcpy((void*) average, (const void*) line_buffer,
 			NUM_PIXELS * sizeof(uint16_t));
@@ -109,38 +102,40 @@ void Camera::calibrate(void) {
 	}
 
 	//TODO a better threshold might be some percentage other than 50%
-	calibration.threshold = (calibration.max + calibration.min) / 2;
+	calibration.rising_threshold = (calibration.max + calibration.min) / 2 + THRESHOLD_WIDTH;
+	calibration.falling_threshold = (calibration.max + calibration.min) / 2 - THRESHOLD_WIDTH;
 
 }
 
-void Camera::find_edges(uint16_t* camline, struct data* camdata) {
-	camdata->left_edge_inner = find_edge_between(camdata->prev_center,
-			NUM_PIXELS, camline, RISING);
-	camdata->left_edge_outer = find_edge_between(camdata->left_edge_inner,
+void Camera::find_edges(uint16_t* camline) {
+	camera_data.left_edge_outer = find_edge_between(0,
 			NUM_PIXELS, camline, FALLING);
-	camdata->right_edge_outer = find_edge_between(0, camdata->prev_center,
+	camera_data.left_edge_inner = find_edge_between(camera_data.left_edge_outer,
+			NUM_PIXELS, camline, RISING);
+	camera_data.right_edge_inner = find_edge_between(camera_data.left_edge_inner + FUZZY_WIDTH,
+			NUM_PIXELS, camline, FALLING);
+	camera_data.right_edge_outer = find_edge_between(camera_data.right_edge_inner, NUM_PIXELS,
 			camline, RISING);
-	camdata->right_edge_inner = find_edge_between(camdata->right_edge_outer,
-			camdata->prev_center, camline, FALLING);
-
+	camera_data.prev_center = camera_data.center;
+	camera_data.center = (camera_data.left_edge_inner + camera_data.right_edge_inner) / 2;
 }
 
 uint8_t Camera::find_edge_between(uint8_t lower_bound, uint8_t upper_bound,
 		uint16_t *camline, edge_polarity pol) {
-	uint8_t edge = -1;
+	int8_t edge = -1;
 	for (int i = lower_bound >= 0 ? lower_bound : 0;
-			i < upper_bound && edge == -1; i++) {
+			i < (upper_bound <= NUM_PIXELS ? upper_bound : NUM_PIXELS) && edge == -1; i++) {
 		if (pol == RISING) {
-			if (camline[i] > calibration.threshold) {
+			if (camline[i] > calibration.rising_threshold) {
 				edge = i;
 			}
 		} else {
-			if (camline[i] < calibration.threshold) {
+			if (camline[i] < calibration.falling_threshold) {
 				edge = i;
 			}
 		}
 	}
-	return edge >= 0 ? edge : 0;
+	return (uint8_t)edge >= 0 ? edge : 0;
 }
 
 uint8_t Camera::calculate_centerline(struct data* camdata) {

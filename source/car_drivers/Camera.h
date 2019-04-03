@@ -21,6 +21,10 @@
 #define NUM_PIXELS (128)			//the number of camera pixels
 #define CALIBRATION_COUNT (256)		//the number of camera readings to average for calibration
 
+#define FUZZY_WIDTH (20)
+
+#define THRESHOLD_WIDTH (100)
+
 class Camera {
 public:
 
@@ -28,10 +32,10 @@ public:
 		uint8_t left_edge_inner, left_edge_outer;
 		uint8_t right_edge_inner, right_edge_outer;
 		uint8_t center, prev_center;
-	};
+	} camera_data;
 
 	struct calibration {
-		uint16_t max, min, threshold;
+		uint16_t max, min, rising_threshold, falling_threshold;
 	} calibration;
 
 	enum edge_polarity {
@@ -72,7 +76,7 @@ public:
 
 private:
 	void filter(void);
-	void find_edges(uint16_t *camline, struct data *camdata);
+	void find_edges(uint16_t camline[]);
 	uint8_t find_edge_between(uint8_t lower_bound, uint8_t upper_bound,
 			uint16_t *camline, edge_polarity pol);
 	uint8_t calculate_centerline(struct data *camdata);
