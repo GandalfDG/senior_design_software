@@ -25,6 +25,10 @@ public:
 
 	FTM_Type* pwm_ftm_base = SERVO_PWM_PERIPHERAL;
 
+	// pulse widths in microseconds
+	uint16_t center_pulse_width, left_pulse_width, right_pulse_width;
+	uint16_t current_pulse_width;
+
 
 	Servo();
 	Servo(ftm_chnl_t servo_channel, uint16_t left_width, uint16_t right_width);
@@ -35,9 +39,7 @@ public:
 private:
 	ftm_chnl_t servo_channel;
 
-	// pulse widths in microseconds
-	uint16_t center_pulse_width, left_pulse_width, right_pulse_width;
-	uint16_t current_pulse_width;
+
 };
 
 #endif /* CAR_DRIVERS_SERVO_H_ */
