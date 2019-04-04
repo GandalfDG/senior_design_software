@@ -22,23 +22,22 @@ void Camera::init() {
 	adcconfig.enableDifferentialConversion = false;
 	ADC16_SetChannelConfig(adc_base, 0, &adcconfig);
 
-}
-
-void Camera::process(void) {
-	uint16_t current_line[NUM_PIXELS];
-	uint16_t previous_line[NUM_PIXELS];
-	uint16_t *temp;
-
 	//initialize camera data struct
 	camera_data.center = NUM_PIXELS / 2;
 	camera_data.prev_center = camera_data.center;
 
-	//load the previous value on the first run
-	ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-	memcpy((void*) previous_line, (const void*) line_buffer,
-			NUM_PIXELS * sizeof(uint16_t));
+}
 
-	for (;;) {
+void Camera::process(void) {
+	uint16_t current_line[NUM_PIXELS];
+//	uint16_t previous_line[NUM_PIXELS];
+	uint16_t *temp;
+
+	//load the previous value on the first run
+//	ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+//	memcpy((void*) previous_line, (const void*) line_buffer,
+//			NUM_PIXELS * sizeof(uint16_t));
+
 		//wait for the line buffer to be full
 		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
@@ -51,13 +50,10 @@ void Camera::process(void) {
 
 		//move current line to previous line
 		//TODO optimize this by swapping pointers around instead of copying all the time
-		memcpy((void*) previous_line, (const void*) current_line,
-				NUM_PIXELS * sizeof(uint16_t));
+//		memcpy((void*) previous_line, (const void*) current_line,
+//				NUM_PIXELS * sizeof(uint16_t));
 
 		//pass data to relevant tasks (motor, servo)
-
-		vTaskDelay(pdMS_TO_TICKS(1000));
-	}
 
 }
 
