@@ -94,45 +94,13 @@ int main(void) {
 
 	expander.begin();
 
-	xTaskCreate(print_diagnostic_task, "Diagnostic task",
-	configMINIMAL_STACK_SIZE + 100, NULL, hello_task_PRIORITY, NULL);
+	xTaskCreate(print_diagnostic_task, "Diagnostic task", configMINIMAL_STACK_SIZE + 100, NULL, hello_task_PRIORITY, NULL);
 
-//	if (xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE + 20,
-//	NULL, hello_task_PRIORITY, NULL) != pdPASS) {
-//		PRINTF("Task creation failed!.\r\n");
-//		while (1)
-//			;
-//	}
-
-//	xTaskCreate(servo_test_task, "Servo_test", configMINIMAL_STACK_SIZE, &servo,
-//	hello_task_PRIORITY, &servo.test_task_handle);
-
-//	xTaskCreate(user_interface_task, "UI", configMINIMAL_STACK_SIZE + 100, NULL,
-//	hello_task_PRIORITY, &interface.task_handle);
-
-//	xTaskCreate(steering_task, "Circle Drive", configMINIMAL_STACK_SIZE,
-//			NULL,
-//			hello_task_PRIORITY, &circle_handle);
-
-	xTaskCreate(camera_task, "Camera_process",
-	NUM_PIXELS * sizeof(uint16_t) * 2,
-	NULL, hello_task_PRIORITY + 1, &camera.task_handle);
+	xTaskCreate(camera_task, "Camera_process", NUM_PIXELS * sizeof(uint16_t) * 2, NULL, hello_task_PRIORITY + 1, &camera.task_handle);
 
 	vTaskStartScheduler();
 	for (;;)
 		;
-}
-
-/*!
- * @brief Task responsible for printing of "Hello world." message.
- */
-static void hello_task(void *pvParameters) {
-	interface.begin(16, 2);
-	interface.clear();
-	for (;;) {
-		PRINTF("Hello world.\r\n");
-		vTaskDelay(pdMS_TO_TICKS(1000));
-	}
 }
 
 static void motor_test_task(void *pvParameters) {
