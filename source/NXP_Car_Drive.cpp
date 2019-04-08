@@ -55,7 +55,7 @@ static void hello_task(void*);
 static void motor_test_task(void*);
 static void servo_test_task(void *pvParameters);
 static void print_diagnostic_task(void *pvParameters);
-static void camera_task(void *pvParameters);
+static void drive_task(void *pvParameters);
 static void user_interface_task(void *pvParameters);
 static void steering_task(void *pvParameters);
 
@@ -96,7 +96,7 @@ int main(void) {
 
 	xTaskCreate(print_diagnostic_task, "Diagnostic task", configMINIMAL_STACK_SIZE + 100, NULL, hello_task_PRIORITY, NULL);
 
-	xTaskCreate(camera_task, "Camera_process", NUM_PIXELS * sizeof(uint16_t) * 2, NULL, hello_task_PRIORITY + 1, &camera.task_handle);
+	xTaskCreate(drive_task, "Camera_process", NUM_PIXELS * sizeof(uint16_t) * 2, NULL, hello_task_PRIORITY + 1, &camera.task_handle);
 
 	vTaskStartScheduler();
 	for (;;)
@@ -131,32 +131,31 @@ static void print_diagnostic_task(void *pvParameters) {
 	}
 }
 
-static void camera_task(void *pvParameters) {
+static void drive_task(void *pvParameters) {
 	camera.calibrate();
-	motor_l.set_direction(Motor::FORWARD);
-	motor_r.set_direction(Motor::FORWARD);
-	motor_l.set_speed(50);
-	motor_r.set_speed(50);
+//	motor_l.set_direction(Motor::FORWARD);
+//	motor_r.set_direction(Motor::FORWARD);
+//	motor_l.set_speed(50);
+//	motor_r.set_speed(50);
 	for(;;) {
 		camera.process();
-		int position = (servo.right_pulse_width - servo.left_pulse_width) * (((float)NUM_PIXELS - (float)camera.camera_data.center) / (float)NUM_PIXELS) + servo.left_pulse_width;
-		servo.set_position(position);
+		ser
 		vTaskDelay(pdMS_TO_TICKS(20));
 	}
 }
 
-static void steering_task(void *pvParameters) {
-	uint16_t position;
-	motor_l.set_direction(Motor::FORWARD);
-	motor_r.set_direction(Motor::FORWARD);
-	motor_l.set_speed(50);
-	motor_r.set_speed(50);
-	for(;;) {
-		position = (servo.right_pulse_width - servo.left_pulse_width) * (((float)NUM_PIXELS - (float)camera.camera_data.center) / (float)NUM_PIXELS) + servo.left_pulse_width;
-		servo.set_position(position);
-		vTaskDelay(pdMS_TO_TICKS(10));
-	}
-}
+//static void steering_task(void *pvParameters) {
+//	uint16_t position;
+//	motor_l.set_direction(Motor::FORWARD);
+//	motor_r.set_direction(Motor::FORWARD);
+//	motor_l.set_speed(50);
+//	motor_r.set_speed(50);
+//	for(;;) {
+//		position = (servo.right_pulse_width - servo.left_pulse_width) * (((float)NUM_PIXELS - (float)camera.camera_data.center) / (float)NUM_PIXELS) + servo.left_pulse_width;
+//		servo.set_position(position);
+//		vTaskDelay(pdMS_TO_TICKS(10));
+//	}
+//}
 
 void print_interface() {
 	interface.clear();

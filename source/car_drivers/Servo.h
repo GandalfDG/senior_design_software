@@ -36,6 +36,8 @@ public:
 	void set_position(uint16_t pos);
 	void servo_test(void);
 
+	void position_from_camera(int centerline);
+
 private:
 	ftm_chnl_t servo_channel;
 
