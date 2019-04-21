@@ -63,6 +63,15 @@ void Servo::servo_test(void) {
 }
 
 void Servo::position_from_camera(int centerline) {
-	int position = (right_pulse_width - left_pulse_width) * (((float)NUM_PIXELS - (float)centerline) / (float)NUM_PIXELS) + left_pulse_width;
+int exp_centerline;
+if(centerline >= 64) {
+	exp_centerline = (int)(centerline + pow(EXPVAL, centerline - 64));
+	exp_centerline = exp_centerline <= NUM_PIXELS ? exp_centerline : NUM_PIXELS;
+}
+else {
+	exp_centerline = (int)(centerline - pow(EXPVAL, 64 - centerline));
+	exp_centerline = exp_centerline >= 0 ? exp_centerline : 0;
+}
+int position = (right_pulse_width - left_pulse_width) * (((float)NUM_PIXELS - (float)exp_centerline) / (float)NUM_PIXELS) + left_pulse_width;
 	set_position(position);
 }

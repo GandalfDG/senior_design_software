@@ -11,12 +11,15 @@
 #include "MK64f12.h"
 #include "peripherals.h"
 
+#include <cmath>
 #include "FreeRTOS.h"
 #include "task.h"
 
 #define SERVO_PWM_PERIOD (20000) // microseconds
 #define SERVO_TEST_PERIOD (100)  // milliseconds
 #define SERVO_TEST_STEP (50)
+#define NUM_PIXELS (128)
+#define EXPVAL (1.15f)
 
 class Servo {
 public:
