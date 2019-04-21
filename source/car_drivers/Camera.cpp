@@ -152,7 +152,13 @@ uint8_t Camera::calculate_centerline(struct data* camdata) {
 		camdata->center = camdata->prev_center;
 	}
 	else {
-		camdata->center = (camdata->left_edge_inner + camdata->right_edge_inner) / 2;
+		int temp_center = (camdata->left_edge_inner + camdata->right_edge_inner) / 2;
+		if(abs(temp_center - camdata->prev_center) > BAD_CENTER_THRESHOLD) {
+			camdata->center = camdata->prev_center;
+		}
+		else {
+			camdata->center = temp_center;
+		}
 	}
 
 	camdata->prev_center = camdata->center;

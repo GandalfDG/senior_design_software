@@ -24,6 +24,7 @@
 #define FUZZY_WIDTH (20)
 
 #define THRESHOLD_WIDTH (100)
+#define BAD_CENTER_THRESHOLD (50)
 
 class Camera {
 public:
