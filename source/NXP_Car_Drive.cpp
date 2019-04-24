@@ -120,6 +120,7 @@ static void camera_task(void *pvParameters) {
 }
 
 static void motor_task(void *pvParameters) {
+	drive.
 	for(;;) {
 		drive.update_from_camera(camera.camera_data.center);
 		vTaskDelay(pdMS_TO_TICKS(20));
@@ -130,7 +131,7 @@ static void servo_task(void *pvParameters) {
 	servo.set_position(servo.center_pulse_width);
 	for(;;) {
 		servo.position_from_camera(camera.camera_data.center);
-		vTaskDelay(pdMS_TO_TICKS(20));
+		vTaskDelay(pdMS_TO_TICKS(100));
 	}
 }
 
