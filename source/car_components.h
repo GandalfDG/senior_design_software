@@ -13,9 +13,12 @@
 #include <car_drivers/Servo.h>
 #include <car_drivers/PortExpander.h>
 #include <car_drivers/UserInterface.h>
+#include "MotorDrive.h"
 
 extern Motor motor_l;
 extern Motor motor_r;
+
+extern MotorDrive drive;
 
 extern Servo servo;
 
