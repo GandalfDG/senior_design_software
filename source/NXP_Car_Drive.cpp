@@ -103,7 +103,7 @@ int main(void) {
 	xTaskCreate(print_diagnostic_task, "Diagnostic task", configMINIMAL_STACK_SIZE + 100, NULL, DIAG_TASK_PRIO, NULL);
 
 	xTaskCreate(camera_task, "Camera", NUM_PIXELS * sizeof(uint16_t) * 2, NULL, CAM_TASK_PRIO, &camera.task_handle);
-	xTaskCreate(servo_task, "Servo", configMINIMAL_STACK_SIZE, NULL, CAM_TASK_PRIO, &servo.task_handle);
+	xTaskCreate(servo_task, "Servo", configMINIMAL_STACK_SIZE + 100, NULL, CAM_TASK_PRIO, &servo.task_handle);
 	xTaskCreate(motor_task, "Motor", configMINIMAL_STACK_SIZE, NULL, CAM_TASK_PRIO, &drive.task_handle);
 
 	vTaskStartScheduler();
@@ -120,7 +120,7 @@ static void camera_task(void *pvParameters) {
 }
 
 static void motor_task(void *pvParameters) {
-	drive.
+	drive.set_motors(50);
 	for(;;) {
 		drive.update_from_camera(camera.camera_data.center);
 		vTaskDelay(pdMS_TO_TICKS(20));
@@ -131,7 +131,7 @@ static void servo_task(void *pvParameters) {
 	servo.set_position(servo.center_pulse_width);
 	for(;;) {
 		servo.position_from_camera(camera.camera_data.center);
-		vTaskDelay(pdMS_TO_TICKS(100));
+		vTaskDelay(pdMS_TO_TICKS(50));
 	}
 }
 
