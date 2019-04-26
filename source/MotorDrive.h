@@ -12,11 +12,11 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#define TOP_SPEED (100)
+#define TOP_SPEED (60)
 #define MIN_SPEED (50)
 
 #define CENTER (64)
-#define CENTER_BUFFER (5)
+#define CENTER_BUFFER (8)
 
 class MotorDrive {
 public:

@@ -8,14 +8,23 @@
 #include <MotorDrive.h>
 
 void MotorDrive::update_from_camera(int centerline) {
+	int diff_amt = 0;
 	//if on centerline, increase speed towards top speed
 	if(centerline < CENTER + CENTER_BUFFER && centerline > CENTER - CENTER_BUFFER) {
 		current_speed += current_speed + 1 <= TOP_SPEED ? 1 : 0;
+		set_motors(current_speed);
+	}
+	else if(centerline >= CENTER + CENTER_BUFFER) {
+		current_speed = MIN_SPEED;
+		diff_amt = centerline - CENTER;
+		set_motors(current_speed - diff_amt, current_speed);
 	}
 	else {
 		current_speed = MIN_SPEED;
+		diff_amt = CENTER - centerline;
+		set_motors(current_speed, current_speed - diff_amt);
 	}
-	set_motors(current_speed);
+
 }
 
 void MotorDrive::set_motors(int duty) {
