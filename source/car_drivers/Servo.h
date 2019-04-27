@@ -19,7 +19,7 @@
 #define SERVO_TEST_PERIOD (100)  // milliseconds
 #define SERVO_TEST_STEP (50)
 #define NUM_PIXELS (128)
-#define EXPVAL (1.15f)
+#define EXPVAL (1.2f)
 
 class Servo {
 public:

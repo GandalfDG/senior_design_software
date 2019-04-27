@@ -12,7 +12,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#define TOP_SPEED (60)
+#define TOP_SPEED (50)
 #define MIN_SPEED (50)
 
 #define CENTER (64)

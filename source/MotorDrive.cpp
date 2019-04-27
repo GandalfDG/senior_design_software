@@ -17,12 +17,12 @@ void MotorDrive::update_from_camera(int centerline) {
 	else if(centerline >= CENTER + CENTER_BUFFER) {
 		current_speed = MIN_SPEED;
 		diff_amt = centerline - CENTER;
-		set_motors(current_speed - diff_amt, current_speed);
+		set_motors(current_speed, current_speed + diff_amt);
 	}
 	else {
 		current_speed = MIN_SPEED;
 		diff_amt = CENTER - centerline;
-		set_motors(current_speed, current_speed - diff_amt);
+		set_motors(current_speed + diff_amt, current_speed);
 	}
 
 }
