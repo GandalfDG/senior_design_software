@@ -53,20 +53,16 @@
 #define DIAG_TASK_PRIO (configMAX_PRIORITIES - 2)
 #define CAM_TASK_PRIO (configMAX_PRIORITIES - 1)
 
-static void hello_task(void *);
 static void motor_test_task(void *);
 static void servo_test_task(void *pvParameters);
 static void print_diagnostic_task(void *pvParameters);
-static void drive_task(void *pvParameters);
 static void user_interface_task(void *pvParameters);
-static void steering_task(void *pvParameters);
 
 static void camera_task(void *pvParameters);
 static void motor_task(void *pvParameters);
 static void servo_task(void *pvParameters);
 
 //test drive
-static void circle_drive_task(void *pvParameters);
 TaskHandle_t circle_handle;
 
 /*
