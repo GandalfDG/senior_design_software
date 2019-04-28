@@ -53,8 +53,8 @@
 #define DIAG_TASK_PRIO (configMAX_PRIORITIES - 2)
 #define CAM_TASK_PRIO (configMAX_PRIORITIES - 1)
 
-static void hello_task(void*);
-static void motor_test_task(void*);
+static void hello_task(void *);
+static void motor_test_task(void *);
 static void servo_test_task(void *pvParameters);
 static void print_diagnostic_task(void *pvParameters);
 static void drive_task(void *pvParameters);
@@ -72,7 +72,8 @@ TaskHandle_t circle_handle;
 /*
  * @brief   Application entry point.
  */
-int main(void) {
+int main(void)
+{
 
 	/* Init board hardware. */
 	BOARD_InitBootPins();
@@ -81,27 +82,33 @@ int main(void) {
 	/* Init FSL debug console. */
 	BOARD_InitDebugConsole();
 
+	//extra initializations that need to happen after peripherals are setup
 	motor_l.init();
 	motor_r.init();
 	camera.init();
 	camera.adc_base->SC1[0] |= ADC_SC1_AIEN_MASK;
 
-	//uint32_t test = ADC16_GetChannelConversionValue(camera.adc_base, 0);
-
+	//change interrupt priorities to work with freeRTOS
 	__NVIC_SetPriority(FTM1_IRQn,
-			((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1)
-					<< __NVIC_PRIO_BITS) - 1UL);
+					   ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1)
+						<< __NVIC_PRIO_BITS) -
+						   1UL);
 	__NVIC_SetPriority(ADC0_IRQn,
-			((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1)
-					<< __NVIC_PRIO_BITS) - 1UL);
+					   ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1)
+						<< __NVIC_PRIO_BITS) -
+						   1UL);
 	__NVIC_SetPriority(PIT0_IRQn,
-			((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1)
-					<< __NVIC_PRIO_BITS) - 1UL);
+					   ((configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1)
+						<< __NVIC_PRIO_BITS) -
+						   1UL);
 
+	//start the I2C port expander
 	expander.begin();
 
+	//this task prints diagnostic information to the console via UART periodically
 	xTaskCreate(print_diagnostic_task, "Diagnostic task", configMINIMAL_STACK_SIZE + 100, NULL, DIAG_TASK_PRIO, NULL);
 
+	//these tasks drive the car
 	xTaskCreate(camera_task, "Camera", NUM_PIXELS * sizeof(uint16_t) * 2, NULL, CAM_TASK_PRIO, &camera.task_handle);
 	xTaskCreate(servo_task, "Servo", configMINIMAL_STACK_SIZE + 100, NULL, CAM_TASK_PRIO, &servo.task_handle);
 	xTaskCreate(motor_task, "Motor", configMINIMAL_STACK_SIZE, NULL, CAM_TASK_PRIO, &drive.task_handle);
@@ -111,62 +118,73 @@ int main(void) {
 		;
 }
 
-static void camera_task(void *pvParameters) {
+static void camera_task(void *pvParameters)
+{
 	camera.calibrate();
-	for(;;) {
+	for (;;)
+	{
 		camera.process();
 		vTaskDelay(pdMS_TO_TICKS(20));
 	}
 }
 
-static void motor_task(void *pvParameters) {
+static void motor_task(void *pvParameters)
+{
 	drive.set_motors(50);
-	for(;;) {
+	for (;;)
+	{
 		drive.update_from_camera(camera.camera_data.center);
 		vTaskDelay(pdMS_TO_TICKS(20));
 	}
 }
 
-static void servo_task(void *pvParameters) {
+static void servo_task(void *pvParameters)
+{
 	servo.set_position(servo.center_pulse_width);
-	for(;;) {
+	for (;;)
+	{
 		servo.position_from_camera(camera.camera_data.center);
+		//this is the maximum update frequency for the servo because any faster is shorter than the control signal period
 		vTaskDelay(pdMS_TO_TICKS(50));
 	}
 }
 
-
-static void motor_test_task(void *pvParameters) {
-	Motor* motor_p = (Motor*) pvParameters;
-	for (;;) {
+static void motor_test_task(void *pvParameters)
+{
+	Motor *motor_p = (Motor *)pvParameters;
+	for (;;)
+	{
 		motor_p->motor_test();
 	}
 }
 
-static void servo_test_task(void *pvParameters) {
-	Servo* servo_p = (Servo*) pvParameters;
-	for (;;) {
+static void servo_test_task(void *pvParameters)
+{
+	Servo *servo_p = (Servo *)pvParameters;
+	for (;;)
+	{
 		servo_p->servo_test();
 	}
 }
 
-static void print_diagnostic_task(void *pvParameters) {
-	for (;;) {
+static void print_diagnostic_task(void *pvParameters)
+{
+	for (;;)
+	{
 		PRINTF("motor_l: %d   motor_r: %d  servo: %d\r\n",
-				motor_l.getRotationSpeed(), motor_r.getRotationSpeed(), servo.current_pulse_width);
+			   motor_l.getRotationSpeed(), motor_r.getRotationSpeed(), servo.current_pulse_width);
 		PRINTF("outer_l: %d  inner_l: %d  center: %d inner_r: %d  outer_r: %d\r\n\r\n",
-				camera.camera_data.left_edge_outer,
-				camera.camera_data.left_edge_inner,
-				camera.camera_data.center,
-				camera.camera_data.right_edge_inner,
-				camera.camera_data.right_edge_outer);
+			   camera.camera_data.left_edge_outer,
+			   camera.camera_data.left_edge_inner,
+			   camera.camera_data.center,
+			   camera.camera_data.right_edge_inner,
+			   camera.camera_data.right_edge_outer);
 		vTaskDelay(pdMS_TO_TICKS(500));
 	}
 }
 
-
-
-void print_interface() {
+void print_interface()
+{
 	interface.clear();
 	interface.setCursor(0, 0);
 	interface.print("TEST  CALIB  RUN");
@@ -178,68 +196,60 @@ void print_interface() {
 	interface.write(0x7E);
 }
 
-static void circle_drive_task(void *pvParameters) {
-	vTaskSuspend(NULL);
-	int position;
-	for(;;) {
-		servo.set_position(servo.left_pulse_width);
-		vTaskDelay(pdMS_TO_TICKS(1000));
-		servo.set_position(servo.center_pulse_width);
-		vTaskDelay(pdMS_TO_TICKS(1000));
-		servo.set_position(servo.right_pulse_width);
-		vTaskDelay(pdMS_TO_TICKS(1000));
-	}
-}
-
-static void user_interface_task(void *pvParameters) {
+static void user_interface_task(void *pvParameters)
+{
 	interface.begin(16, 2, 0);
 	print_interface();
-	for (;;) {
+	for (;;)
+	{
 		uint8_t button = interface.readButtons();
-		if (button && button != 255) {
+		if (button && button != 255)
+		{
 			interface.clear();
 			interface.setCursor(0, 0);
 			//start test
-			if (button == BUTTON_LEFT) {
+			if (button == BUTTON_LEFT)
+			{
 				interface.print("Running Test...");
 				//start test task
-				if ((eTaskGetState(motor_l.test_task_handle) == eSuspended)
-						&& (eTaskGetState(motor_r.test_task_handle)
-								== eSuspended)) {
+				if ((eTaskGetState(motor_l.test_task_handle) == eSuspended) && (eTaskGetState(motor_r.test_task_handle) == eSuspended))
+				{
 					vTaskResume(motor_l.test_task_handle);
 					vTaskResume(motor_r.test_task_handle);
 				}
-				if (eTaskGetState(servo.test_task_handle) == eSuspended) {
+				if (eTaskGetState(servo.test_task_handle) == eSuspended)
+				{
 					vTaskResume(servo.test_task_handle);
 				}
 			}
 			//start calibration
-			else if (button == BUTTON_UP) {
+			else if (button == BUTTON_UP)
+			{
 				interface.print("Running Calibration");
 				//start calibration task
 			}
 			//start running
-			else if (button == BUTTON_RIGHT) {
+			else if (button == BUTTON_RIGHT)
+			{
 				interface.print("Starting Car!");
 				//run main driving task
 				vTaskResume(&circle_handle);
 			}
 			//stop running
-			else {
+			else
+			{
 				interface.print("***ABORT***");
 				motor_l.set_speed(0);
 				motor_r.set_speed(0);
-
 			}
 			vTaskDelay(pdMS_TO_TICKS(1000));
 			print_interface();
 		}
 		//lost i2c connection
-		if (button == 255) {
+		if (button == 255)
+		{
 			motor_l.set_speed(0);
 			motor_r.set_speed(0);
 		}
-
 	}
 }
-
