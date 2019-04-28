@@ -13,7 +13,8 @@
 
 #include <car_drivers/UserInterface.h>
 
-User_Interface::User_Interface() {
+User_Interface::User_Interface()
+{
 	_i2cAddr = 0;
 
 	_displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
@@ -22,9 +23,9 @@ User_Interface::User_Interface() {
 	_rs_pin = 15;
 	_rw_pin = 14;
 	_enable_pin = 13;
-	_data_pins[0] = 12;  // really d4
-	_data_pins[1] = 11;  // really d5
-	_data_pins[2] = 10;  // really d6
+	_data_pins[0] = 12; // really d4
+	_data_pins[1] = 11; // really d5
+	_data_pins[2] = 10; // really d6
 	_data_pins[3] = 9;  // really d7
 
 	_button_pins[0] = 0;
@@ -35,12 +36,14 @@ User_Interface::User_Interface() {
 	// we can't begin() yet :(
 }
 
-User_Interface::~User_Interface() {
+User_Interface::~User_Interface()
+{
 }
 
 void User_Interface::init(uint8_t fourbitmode, uint8_t rs, uint8_t rw,
-		uint8_t enable, uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
-		uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7) {
+						  uint8_t enable, uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
+						  uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7)
+{
 	_rs_pin = rs;
 	_rw_pin = rw;
 	_enable_pin = enable;
@@ -58,7 +61,8 @@ void User_Interface::init(uint8_t fourbitmode, uint8_t rs, uint8_t rw,
 
 	_pinMode(_rs_pin, OUTPUT);
 	// we can save 1 pin by not using RW. Indicate by passing 255 instead of pin#
-	if (_rw_pin != 255) {
+	if (_rw_pin != 255)
+	{
 		_pinMode(_rw_pin, OUTPUT);
 	}
 	_pinMode(_enable_pin, OUTPUT);
@@ -71,9 +75,11 @@ void User_Interface::init(uint8_t fourbitmode, uint8_t rs, uint8_t rw,
 	begin(16, 1);
 }
 
-void User_Interface::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
+void User_Interface::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
+{
 	// check if i2c
-	if (_i2cAddr != 255) {
+	if (_i2cAddr != 255)
+	{
 		//_i2c.begin(_i2cAddr);
 		_i2c.begin();
 
@@ -90,20 +96,23 @@ void User_Interface::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 		for (uint8_t i = 0; i < 4; i++)
 			_i2c.pinMode(_data_pins[i], OUTPUT);
 
-		for (uint8_t i = 0; i < 5; i++) {
+		for (uint8_t i = 0; i < 5; i++)
+		{
 			_i2c.pinMode(_button_pins[i], INPUT);
 			_i2c.pullUp(_button_pins[i], 1);
 		}
 	}
 
-	if (lines > 1) {
+	if (lines > 1)
+	{
 		_displayfunction |= LCD_2LINE;
 	}
 	_numlines = lines;
 	_currline = 0;
 
 	// for some 1 line displays you can select a 10 pixel high font
-	if ((dotsize != 0) && (lines == 1)) {
+	if ((dotsize != 0) && (lines == 1))
+	{
 		_displayfunction |= LCD_5x10DOTS;
 	}
 
@@ -114,12 +123,14 @@ void User_Interface::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 	// Now we pull both RS and R/W low to begin commands
 	_digitalWrite(_rs_pin, LOW);
 	_digitalWrite(_enable_pin, LOW);
-	if (_rw_pin != 255) {
+	if (_rw_pin != 255)
+	{
 		_digitalWrite(_rw_pin, LOW);
 	}
 
 	//put the LCD into 4 bit or 8 bit mode
-	if (!(_displayfunction & LCD_8BITMODE)) {
+	if (!(_displayfunction & LCD_8BITMODE))
+	{
 		// this is according to the hitachi HD44780 datasheet
 		// figure 24, pg 46
 
@@ -137,7 +148,9 @@ void User_Interface::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 
 		// finally, set to 8-bit interface
 		write4bits(0x02);
-	} else {
+	}
+	else
+	{
 		// this is according to the hitachi HD44780 datasheet
 		// page 45 figure 23
 
@@ -167,138 +180,167 @@ void User_Interface::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 	_displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
 	// set the entry mode
 	command(LCD_ENTRYMODESET | _displaymode);
-
 }
 
-void User_Interface::clear() {
-	command(LCD_CLEARDISPLAY);  // clear display, set cursor position to zero
+void User_Interface::clear()
+{
+	command(LCD_CLEARDISPLAY);	// clear display, set cursor position to zero
 	vTaskDelay(pdMS_TO_TICKS(2)); // this command takes a long time!
 }
 
-void User_Interface::home() {
-	command(LCD_RETURNHOME);  // set cursor position to zero
+void User_Interface::home()
+{
+	command(LCD_RETURNHOME);	  // set cursor position to zero
 	vTaskDelay(pdMS_TO_TICKS(2)); // this command takes a long time!
 }
 
-void User_Interface::noDisplay() {
+void User_Interface::noDisplay()
+{
 	_displaycontrol &= ~LCD_DISPLAYON;
 	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
-void User_Interface::display() {
+void User_Interface::display()
+{
 	_displaycontrol |= LCD_DISPLAYON;
 	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
-void User_Interface::noBlink() {
+void User_Interface::noBlink()
+{
 	_displaycontrol &= ~LCD_BLINKON;
 	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
-void User_Interface::blink() {
+void User_Interface::blink()
+{
 	_displaycontrol |= LCD_BLINKON;
 	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
-void User_Interface::noCursor() {
+void User_Interface::noCursor()
+{
 	_displaycontrol &= ~LCD_CURSORON;
 	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
-void User_Interface::cursor() {
+void User_Interface::cursor()
+{
 	_displaycontrol |= LCD_CURSORON;
 	command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
-void User_Interface::scrollDisplayLeft() {
+void User_Interface::scrollDisplayLeft()
+{
 	command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
 }
 
-void User_Interface::scrollDisplayRight() {
+void User_Interface::scrollDisplayRight()
+{
 	command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
 }
 
-void User_Interface::leftToRight() {
+void User_Interface::leftToRight()
+{
 	_displaymode |= LCD_ENTRYLEFT;
 	command(LCD_ENTRYMODESET | _displaymode);
 }
 
-void User_Interface::rightToLeft() {
+void User_Interface::rightToLeft()
+{
 	_displaymode &= ~LCD_ENTRYLEFT;
 	command(LCD_ENTRYMODESET | _displaymode);
 }
 
-void User_Interface::autoscroll() {
+void User_Interface::autoscroll()
+{
 	_displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
 	command(LCD_ENTRYMODESET | _displaymode);
 }
 
-void User_Interface::noAutoscroll() {
+void User_Interface::noAutoscroll()
+{
 	_displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
 	command(LCD_ENTRYMODESET | _displaymode);
 }
 
-void User_Interface::setBacklight(uint8_t status) {
+void User_Interface::setBacklight(uint8_t status)
+{
 	// check if i2c or SPI
 	_i2c.digitalWrite(8, ~(status >> 2) & 0x1);
 	_i2c.digitalWrite(7, ~(status >> 1) & 0x1);
 	_i2c.digitalWrite(6, ~status & 0x1);
 }
 
-void User_Interface::createChar(uint8_t location, uint8_t charmap[]) {
+void User_Interface::createChar(uint8_t location, uint8_t charmap[])
+{
 }
 
-void User_Interface::setCursor(uint8_t col, uint8_t row) {
-	int row_offsets[] = { 0x00, 0x40, 0x14, 0x54 };
-	if (row > _numlines) {
-		row = _numlines - 1;    // we count rows starting w/0
+void User_Interface::setCursor(uint8_t col, uint8_t row)
+{
+	int row_offsets[] = {0x00, 0x40, 0x14, 0x54};
+	if (row > _numlines)
+	{
+		row = _numlines - 1; // we count rows starting w/0
 	}
 
 	command(LCD_SETDDRAMADDR | (col + row_offsets[row]));
 }
 
-size_t User_Interface::write(uint8_t value) {
+size_t User_Interface::write(uint8_t value)
+{
 	send(value, HIGH);
 	return 1;
 }
 
-void User_Interface::command(uint8_t value) {
+void User_Interface::command(uint8_t value)
+{
 	send(value, LOW);
 }
 
-uint8_t User_Interface::readButtons() {
+uint8_t User_Interface::readButtons()
+{
 	uint8_t reply = 0x1F;
 
-	for (uint8_t i = 0; i < 5; i++) {
+	for (uint8_t i = 0; i < 5; i++)
+	{
 		reply &= ~((_i2c.digitalRead(_button_pins[i])) << i);
 	}
 	return reply;
 }
 
-void User_Interface::send(uint8_t value, uint8_t mode) {
+void User_Interface::send(uint8_t value, uint8_t mode)
+{
 	_digitalWrite(_rs_pin, mode);
 
 	// if there is a RW pin indicated, set it low to Write
-	if (_rw_pin != 255) {
+	if (_rw_pin != 255)
+	{
 		_digitalWrite(_rw_pin, LOW);
 	}
 
-	if (_displayfunction & LCD_8BITMODE) {
+	if (_displayfunction & LCD_8BITMODE)
+	{
 		write8bits(value);
-	} else {
+	}
+	else
+	{
 		write4bits(value >> 4);
 		write4bits(value);
 	}
 }
 
-void User_Interface::write4bits(uint8_t value) {
-	if (_i2cAddr != 255) {
+void User_Interface::write4bits(uint8_t value)
+{
+	if (_i2cAddr != 255)
+	{
 		uint16_t out = 0;
 
 		out = _i2c.readGPIOAB();
 
 		// speed up for i2c since its sluggish
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 4; i++)
+		{
 			out &= ~(1 << _data_pins[i]);
 			out |= ((value >> i) & 0x1) << _data_pins[i];
 		}
@@ -316,9 +358,11 @@ void User_Interface::write4bits(uint8_t value) {
 		out &= ~(1 << _enable_pin);
 		_i2c.writeGPIOAB(out);
 		vTaskDelay(1);
-
-	} else {
-		for (int i = 0; i < 4; i++) {
+	}
+	else
+	{
+		for (int i = 0; i < 4; i++)
+		{
 			_pinMode(_data_pins[i], OUTPUT);
 			_digitalWrite(_data_pins[i], (value >> i) & 0x01);
 		}
@@ -326,8 +370,10 @@ void User_Interface::write4bits(uint8_t value) {
 	}
 }
 
-void User_Interface::write8bits(uint8_t value) {
-	for (int i = 0; i < 8; i++) {
+void User_Interface::write8bits(uint8_t value)
+{
+	for (int i = 0; i < 8; i++)
+	{
 		_pinMode(_data_pins[i], OUTPUT);
 		_digitalWrite(_data_pins[i], (value >> i) & 0x01);
 	}
@@ -335,28 +381,32 @@ void User_Interface::write8bits(uint8_t value) {
 	pulseEnable();
 }
 
-void User_Interface::pulseEnable() {
+void User_Interface::pulseEnable()
+{
 	_digitalWrite(_enable_pin, LOW);
 	vTaskDelay(1);
 	_digitalWrite(_enable_pin, HIGH);
 	vTaskDelay(1);
 	_digitalWrite(_enable_pin, LOW);
 	vTaskDelay(1);
-
 }
 
-void User_Interface::_digitalWrite(uint8_t p, uint8_t d) {
+void User_Interface::_digitalWrite(uint8_t p, uint8_t d)
+{
 	_i2c.digitalWrite(p, d);
 }
 
-void User_Interface::_pinMode(uint8_t p, uint8_t d) {
+void User_Interface::_pinMode(uint8_t p, uint8_t d)
+{
 	// an i2c command
 	_i2c.pinMode(p, d);
 }
 
-size_t User_Interface::write(const char *buffer, size_t size) {
+size_t User_Interface::write(const char *buffer, size_t size)
+{
 	size_t n = 0;
-	while (size--) {
+	while (size--)
+	{
 		if (write(*buffer++))
 			n++;
 		else
@@ -365,6 +415,7 @@ size_t User_Interface::write(const char *buffer, size_t size) {
 	return n;
 }
 
-size_t User_Interface::print(const std::string &s) {
+size_t User_Interface::print(const std::string &s)
+{
 	return write(s.c_str(), s.length());
 }

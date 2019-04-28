@@ -68,16 +68,17 @@
 #define BUTTON_RIGHT 0x02
 #define BUTTON_SELECT 0x01
 
-class User_Interface {
-public:
+class User_Interface
+{
+  public:
 	TaskHandle_t task_handle;
 
 	User_Interface();
 	virtual ~User_Interface();
 
 	void init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t enable,
-			uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t d4,
-			uint8_t d5, uint8_t d6, uint8_t d7);
+			  uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t d4,
+			  uint8_t d5, uint8_t d6, uint8_t d7);
 
 	void begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS);
 
@@ -110,7 +111,7 @@ public:
 	size_t write(const char *buffer, size_t size);
 	size_t print(const std::string &s);
 
-private:
+  private:
 	void send(uint8_t, uint8_t);
 	void write4bits(uint8_t);
 	void write8bits(uint8_t);
@@ -118,8 +119,8 @@ private:
 	void _digitalWrite(uint8_t, uint8_t);
 	void _pinMode(uint8_t, uint8_t);
 
-	uint8_t _rs_pin; // LOW: command.  HIGH: character.
-	uint8_t _rw_pin; // LOW: write to LCD.  HIGH: read from LCD.
+	uint8_t _rs_pin;	 // LOW: command.  HIGH: character.
+	uint8_t _rw_pin;	 // LOW: write to LCD.  HIGH: read from LCD.
 	uint8_t _enable_pin; // activated by a HIGH pulse.
 	uint8_t _data_pins[8];
 	uint8_t _button_pins[5];
