@@ -7,6 +7,9 @@
   products from Adafruit!
   Written by Limor Fried/Ladyada for Adafruit Industries.
   BSD license, all text above must be included in any redistribution
+
+  refer to this link for usage information:
+  https://github.com/adafruit/Adafruit-RGB-LCD-Shield-Library
  ****************************************************/
 
 #ifndef CAR_DRIVERS_PORTEXPANDER_H_
