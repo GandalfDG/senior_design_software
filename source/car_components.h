@@ -1,5 +1,7 @@
 /*
  * car_components.h
+ * 
+ * This file contains declarations of all of the objects used to drive the car.
  *
  *  Created on: Feb 5, 2019
  *      Author: Jack
@@ -26,7 +28,5 @@ extern Camera camera;
 
 extern PortExpander expander;
 extern User_Interface interface;
-
-
 
 #endif /* CAR_COMPONENTS_H_ */
