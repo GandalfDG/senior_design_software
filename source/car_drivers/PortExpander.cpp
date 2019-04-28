@@ -13,8 +13,10 @@
 
 #define DEBUG_I2C
 
-void PortExpander::begin(uint8_t addr) {
-	if (addr > 7) {
+void PortExpander::begin(uint8_t addr)
+{
+	if (addr > 7)
+	{
 		addr = 7;
 	}
 
@@ -25,11 +27,13 @@ void PortExpander::begin(uint8_t addr) {
 	writeSingleByte(MCP23017_IODIRB, 0xFF);
 }
 
-void PortExpander::begin(void) {
+void PortExpander::begin(void)
+{
 	begin(0);
 }
 
-void PortExpander::pinMode(uint8_t p, uint8_t d) {
+void PortExpander::pinMode(uint8_t p, uint8_t d)
+{
 	uint8_t iodir;
 	uint8_t iodiraddr;
 
@@ -39,7 +43,8 @@ void PortExpander::pinMode(uint8_t p, uint8_t d) {
 
 	if (p < 8)
 		iodiraddr = MCP23017_IODIRA;
-	else {
+	else
+	{
 		iodiraddr = MCP23017_IODIRB;
 		p -= 8;
 	}
@@ -48,9 +53,12 @@ void PortExpander::pinMode(uint8_t p, uint8_t d) {
 	iodir = readSingleByte(iodiraddr);
 
 	// set the pin and direction
-	if (d == INPUT) {
+	if (d == INPUT)
+	{
 		iodir |= 1 << p;
-	} else {
+	}
+	else
+	{
 		iodir &= ~(1 << p);
 	}
 
@@ -58,7 +66,8 @@ void PortExpander::pinMode(uint8_t p, uint8_t d) {
 	writeSingleByte(iodiraddr, iodir);
 }
 
-void PortExpander::digitalWrite(uint8_t p, uint8_t d) {
+void PortExpander::digitalWrite(uint8_t p, uint8_t d)
+{
 	uint8_t gpio = 0;
 	uint8_t gpioaddr, olataddr;
 
@@ -66,10 +75,13 @@ void PortExpander::digitalWrite(uint8_t p, uint8_t d) {
 	if (p > 15)
 		return;
 
-	if (p < 8) {
+	if (p < 8)
+	{
 		olataddr = MCP23017_OLATA;
 		gpioaddr = MCP23017_GPIOA;
-	} else {
+	}
+	else
+	{
 		olataddr = MCP23017_OLATB;
 		gpioaddr = MCP23017_GPIOB;
 		p -= 8;
@@ -79,9 +91,12 @@ void PortExpander::digitalWrite(uint8_t p, uint8_t d) {
 	gpio = readSingleByte(olataddr);
 
 	// set the pin and direction
-	if (d == HIGH) {
+	if (d == HIGH)
+	{
 		gpio |= 1 << p;
-	} else {
+	}
+	else
+	{
 		gpio &= ~(1 << p);
 	}
 
@@ -89,7 +104,8 @@ void PortExpander::digitalWrite(uint8_t p, uint8_t d) {
 	writeSingleByte(gpioaddr, gpio);
 }
 
-void PortExpander::pullUp(uint8_t p, uint8_t d) {
+void PortExpander::pullUp(uint8_t p, uint8_t d)
+{
 	uint8_t gppu;
 	uint8_t gppuaddr;
 
@@ -99,7 +115,8 @@ void PortExpander::pullUp(uint8_t p, uint8_t d) {
 
 	if (p < 8)
 		gppuaddr = MCP23017_GPPUA;
-	else {
+	else
+	{
 		gppuaddr = MCP23017_GPPUB;
 		p -= 8;
 	}
@@ -108,9 +125,12 @@ void PortExpander::pullUp(uint8_t p, uint8_t d) {
 	gppu = readSingleByte(gppuaddr);
 
 	// set the pin and direction
-	if (d == HIGH) {
+	if (d == HIGH)
+	{
 		gppu |= 1 << p;
-	} else {
+	}
+	else
+	{
 		gppu &= ~(1 << p);
 	}
 
@@ -118,7 +138,8 @@ void PortExpander::pullUp(uint8_t p, uint8_t d) {
 	writeSingleByte(gppuaddr, gppu);
 }
 
-uint8_t PortExpander::digitalRead(uint8_t p) {
+uint8_t PortExpander::digitalRead(uint8_t p)
+{
 	uint8_t gpioaddr;
 
 	// only 16 bits!
@@ -127,7 +148,8 @@ uint8_t PortExpander::digitalRead(uint8_t p) {
 
 	if (p < 8)
 		gpioaddr = MCP23017_GPIOA;
-	else {
+	else
+	{
 		gpioaddr = MCP23017_GPIOB;
 		p -= 8;
 	}
@@ -136,12 +158,14 @@ uint8_t PortExpander::digitalRead(uint8_t p) {
 	return (readSingleByte(gpioaddr) >> p) & 0x01;
 }
 
-void PortExpander::writeGPIOAB(uint16_t ba) {
+void PortExpander::writeGPIOAB(uint16_t ba)
+{
 	writeSingleByte(MCP23017_GPIOA, ba & 0xFF);
 	writeSingleByte(MCP23017_GPIOB, ba >> 8);
 }
 
-uint16_t PortExpander::readGPIOAB() {
+uint16_t PortExpander::readGPIOAB()
+{
 	uint16_t ba = 0;
 	uint8_t a;
 
@@ -154,7 +178,8 @@ uint16_t PortExpander::readGPIOAB() {
 	return ba;
 }
 
-status_t PortExpander::writeSingleByte(uint8_t address, uint8_t data) {
+status_t PortExpander::writeSingleByte(uint8_t address, uint8_t data)
+{
 	i2c_master_transfer_t xfer;
 
 	xfer.flags = kI2C_TransferDefaultFlag;
@@ -169,19 +194,20 @@ status_t PortExpander::writeSingleByte(uint8_t address, uint8_t data) {
 }
 
 status_t PortExpander::writeSequentialBytes(uint8_t start_address,
-		uint8_t* data, size_t data_size) {
+											uint8_t *data, size_t data_size)
+{
 	status_t status = kStatus_Success;
 	// send a start signal with the address of the port expander
 	status = I2C_MasterStart(peripheral_base, (MCP23017_ADDRESS | i2caddr),
-			kI2C_Write);
+							 kI2C_Write);
 
 	// send the address of the first register being written
 	status = I2C_MasterWriteBlocking(peripheral_base, &start_address, 1,
-			kI2C_TransferNoStopFlag);
+									 kI2C_TransferNoStopFlag);
 
 	// send the data byte sequence
 	status = I2C_MasterWriteBlocking(peripheral_base, data, data_size,
-			kI2C_TransferNoStopFlag);
+									 kI2C_TransferNoStopFlag);
 
 	// end the connection
 	status = I2C_MasterStop(peripheral_base);
@@ -189,7 +215,8 @@ status_t PortExpander::writeSequentialBytes(uint8_t start_address,
 	return status;
 }
 
-uint8_t PortExpander::readSingleByte(uint8_t address) {
+uint8_t PortExpander::readSingleByte(uint8_t address)
+{
 	uint8_t data;
 	i2c_master_transfer_t xfer;
 

@@ -15,8 +15,9 @@
 #include "MK64F12.h"
 #include "peripherals.h"
 
-class PortExpander {
-public:
+class PortExpander
+{
+  public:
 	void begin(uint8_t addr);
 	void begin(void);
 
@@ -28,14 +29,14 @@ public:
 	void writeGPIOAB(uint16_t);
 	uint16_t readGPIOAB();
 
-private:
-	I2C_Type* peripheral_base = USER_I2C_PERIPHERAL;
+  private:
+	I2C_Type *peripheral_base = USER_I2C_PERIPHERAL;
 	uint8_t i2caddr;
 	i2c_master_transfer_t xfer_struct;
 
 	status_t writeSingleByte(uint8_t address, uint8_t data);
 	status_t writeSequentialBytes(uint8_t start_address,
-			uint8_t* data, size_t data_size);
+								  uint8_t *data, size_t data_size);
 
 	uint8_t readSingleByte(uint8_t address);
 };
@@ -54,7 +55,6 @@ private:
 #define MCP23017_INTCAPA 0x10
 #define MCP23017_GPIOA 0x12
 #define MCP23017_OLATA 0x14
-
 
 #define MCP23017_IODIRB 0x01
 #define MCP23017_IPOLB 0x03
