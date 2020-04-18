@@ -7,6 +7,7 @@
 
 #include "interrupt_handlers.h"
 
+//FTM 3 is used for wheel speed monitoring
 void FTM3_IRQHandler(void)
 {
 	//TODO handle the timer overflow case, speed might temporarily be wrong if the timer overflows
@@ -35,6 +36,7 @@ void FTM3_IRQHandler(void)
 	}
 }
 
+//FTM 1 is used to generate periodic camera control signals
 void FTM1_IRQHandler(void)
 {
 	BaseType_t woken = pdFALSE;
@@ -83,6 +85,7 @@ void FTM1_IRQHandler(void)
 	}
 }
 
+//PIT controls the frequency of camera captures
 void PIT0_IRQHandler(void)
 {
 	//clear PIT interrupt flag
@@ -92,6 +95,7 @@ void PIT0_IRQHandler(void)
 	FTM_EnableInterrupts(camera.ftm_base, 1u << camera.ftm_channel);
 }
 
+//ADC is used to capture analog camera pixel values
 void ADC0_IRQHandler(void)
 {
 	camera.adc_value = ADC16_GetChannelConversionValue(camera.adc_base, 0);
