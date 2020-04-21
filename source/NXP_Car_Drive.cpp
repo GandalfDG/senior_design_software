@@ -114,6 +114,7 @@ int main(void)
 		;
 }
 
+// process the camera's raw input to direct the response of the motors and servo
 static void camera_task(void *pvParameters)
 {
 	camera.calibrate();
@@ -124,6 +125,7 @@ static void camera_task(void *pvParameters)
 	}
 }
 
+// adjust motor output speed and direction while driving
 static void motor_task(void *pvParameters)
 {
 	drive.set_motors(50);
@@ -134,6 +136,7 @@ static void motor_task(void *pvParameters)
 	}
 }
 
+// steer the car while driving
 static void servo_task(void *pvParameters)
 {
 	servo.set_position(servo.center_pulse_width);
@@ -145,6 +148,7 @@ static void servo_task(void *pvParameters)
 	}
 }
 
+// spin the drive motors up and down in both directions
 static void motor_test_task(void *pvParameters)
 {
 	Motor *motor_p = (Motor *)pvParameters;
@@ -154,6 +158,7 @@ static void motor_test_task(void *pvParameters)
 	}
 }
 
+// steer the servo left and right to verify endpoints
 static void servo_test_task(void *pvParameters)
 {
 	Servo *servo_p = (Servo *)pvParameters;
@@ -163,6 +168,7 @@ static void servo_test_task(void *pvParameters)
 	}
 }
 
+// output debugging information via UART
 static void print_diagnostic_task(void *pvParameters)
 {
 	for (;;)
@@ -179,6 +185,10 @@ static void print_diagnostic_task(void *pvParameters)
 	}
 }
 
+/*
+ * outputs the character sequence to display a simple user interface
+ * on the LCD/button module
+*/
 void print_interface()
 {
 	interface.clear();
@@ -192,6 +202,10 @@ void print_interface()
 	interface.write(0x7E);
 }
 
+/*
+ * handles user inputs to perform various tasks such as testing the actuators
+ * and calibrating the camera thresholds for the current lighting conditions
+ */
 static void user_interface_task(void *pvParameters)
 {
 	interface.begin(16, 2, 0);
